@@ -1,4 +1,4 @@
-package ru.prof_jd_6_team7.cooperatproject1;
+package ru.jd6team7.cooperatproject1;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
