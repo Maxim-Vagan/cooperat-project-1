@@ -1,4 +1,4 @@
-package ru.maxvagan.cooperatproject1;
+package ru.jd6team7.cooperatproject1;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
