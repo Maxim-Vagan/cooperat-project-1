@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -49,7 +48,7 @@ public class BotUpdatesListener implements UpdatesListener {
      * @return
      */
     private String parseNotificationTask(String inpMessage){
-        Pattern pattern1 = Pattern.compile("(/start|hi|Hello|Привет|Здравствуй)",CASE_INSENSITIVE);
+        Pattern pattern1 = Pattern.compile("(/start|hi|Hello|[Пп]ривет|[Зз]дравствуй)",CASE_INSENSITIVE);
         Matcher matcher1 = pattern1.matcher(inpMessage);
         String foundCommand = null;
         if (matcher1.matches()){
