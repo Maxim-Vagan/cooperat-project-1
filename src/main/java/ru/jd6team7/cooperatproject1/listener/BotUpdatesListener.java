@@ -23,7 +23,7 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 public class BotUpdatesListener implements UpdatesListener {
     private final Logger loggerConsole = LoggerFactory.getLogger("ru.telbot.console");
     private final Logger loggerFile = LoggerFactory.getLogger("ru.telbot.file");
-    private final String INTRO_INFO = "\uD83D\uDC81 Здравствуйте! Я - бот-ассистент\r\n" +
+    private final static String INTRO_INFO = "\uD83D\uDC81 Здравствуйте! Я - бот-ассистент\r\n" +
             "Моя задача - помочь новым посетителям\r\n" +
             "* Узнать информацию о приюте (Этап 1 /info)\r\n" +
             "* Как взять питомца из приюта (Этап-2 /takePet)\r\n" +

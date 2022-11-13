@@ -13,5 +13,4 @@ public class VisitorService {
         this.visitorRepository = visitorRepository;
     }
 
-    private Visitor addVisitor(String chatId)
 }

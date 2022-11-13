@@ -22,7 +22,6 @@ public class Shelter {
     @Column(name = "name_of_director")
     String directorFIO;
     String address;
-
     String schedule;
 
 
