@@ -23,16 +23,17 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 public class BotUpdatesListener implements UpdatesListener {
     private final Logger loggerConsole = LoggerFactory.getLogger("ru.telbot.console");
     private final Logger loggerFile = LoggerFactory.getLogger("ru.telbot.file");
-    private boolean dasNeedToTreateNotifies = false;
-    private String INTRO_INFO = "\uD83D\uDC81 Здравствуйте! Я - бот-ассистент\r\n" +
+    private final String INTRO_INFO = "\uD83D\uDC81 Здравствуйте! Я - бот-ассистент\r\n" +
             "Моя задача - помочь новым посетителям\r\n" +
             "* Узнать информацию о приюте (Этап 1 /info)\r\n" +
             "* Как взять питомца из приюта (Этап-2 /takePet)\r\n" +
             "* Прислать отчет о питомце (Этап-3 /sendReport)\r\n" +
             "* Позвать волонтёра (/help)";
 
-    @Autowired
-    private TelegramBot telegramBot;
+    private final TelegramBot telegramBot;
+    public BotUpdatesListener (TelegramBot telegramBot) {
+        this.telegramBot = telegramBot;
+    }
 
     @PostConstruct
     public void init() {
@@ -71,26 +72,16 @@ public class BotUpdatesListener implements UpdatesListener {
     @Override
     public int process(List<Update> updates) {
         updates.forEach(update -> {
-            if (update.message()!=null) {
-                String messageText = null;
-                LocalDateTime sendTime = LocalDateTime.now();
-                LocalDateTime justNow = sendTime.truncatedTo(ChronoUnit.SECONDS);
                 String content = update.message().text();
                 long chatId = update.message().chat().id();
-                loggerConsole.info("Processing Chat update:In chat \"{}\" From \"{}\" came message - \"{}\"",
-                        update.message().chat().firstName()+" "+update.message().chat().lastName(),
-                        update.message().from().firstName()+" "+update.message().from().lastName(),
-                        content);
                 if (parseNotificationTask(content).equals("/start")) {
-                    messageText = INTRO_INFO;
-                    dasNeedToTreateNotifies = true;
+                    sendMessage(chatId, INTRO_INFO);
                 }
-                if (messageText != null){
-                    SendMessage messageToChat = new SendMessage(chatId, messageText);
-                    SendResponse responseFromBot = telegramBot.execute(messageToChat);
-                }
-            }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
+    }
+
+    private void sendMessage(long chatId, String messageText) {
+        telegramBot.execute(new SendMessage(chatId, messageText));
     }
 }

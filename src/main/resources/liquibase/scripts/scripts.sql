@@ -18,8 +18,19 @@ create table if not exists shelter
         constraint id
             primary key,
     name    text,
-    INN text,
     name_of_director text,
     address text,
-    working_time text
+    schedule text
+);
+
+-- changeset mkachalov:2
+create table if not exists visitor
+(
+    id      integer
+    constraint id
+    primary key,
+    name    text,
+    phone_number text,
+    email text,
+    status text
 );
