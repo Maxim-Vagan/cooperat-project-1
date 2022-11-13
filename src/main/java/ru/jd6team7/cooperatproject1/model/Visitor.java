@@ -27,6 +27,9 @@ public class Visitor {
     @Column(name = "phone_number")
     String phoneNumber;
     String email;
+    @NonNull
+    @Column(name = "chat_id")
+    long chatId;
     @Column(name = "status")
     MessageStatus messageStatus;
 

@@ -32,5 +32,6 @@ create table if not exists visitor
     name    text,
     phone_number text,
     email text,
+    chat_id integer,
     status text
 );
