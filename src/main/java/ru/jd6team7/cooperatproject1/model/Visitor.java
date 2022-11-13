@@ -21,9 +21,7 @@ public class Visitor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @NonNull
     String name;
-    @NonNull
     @Column(name = "phone_number")
     String phoneNumber;
     String email;
@@ -32,6 +30,23 @@ public class Visitor {
     long chatId;
     @Column(name = "status")
     MessageStatus messageStatus;
+
+    public Visitor(Long id, @NonNull String name, @NonNull String phoneNumber, String email, long chatId, MessageStatus messageStatus) {
+        this.id = id;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.chatId = chatId;
+        this.messageStatus = messageStatus;
+    }
+
+    public Visitor(long chatId) {
+        this.chatId = chatId;
+    }
+
+    public Visitor() {
+
+    }
 
     @Override
     public boolean equals(Object o) {
