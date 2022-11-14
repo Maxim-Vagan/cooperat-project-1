@@ -48,16 +48,3 @@ create table if not exists pet
     pathFileToPhoto varchar(255),
     CONSTRAINT pet_pkey PRIMARY KEY (id)
 );
-
--- changeset maxvagan:2
-create table if not exists pet
-(
-    id BIGSERIAL NOT NULL,
-    petName varchar(255),
-    animalKind varchar(255),
-    animalGender varchar(255),
-    age integer,
-    currentState varchar(255),
-    pathFileToPhoto varchar(255),
-    CONSTRAINT pet_pkey PRIMARY KEY (id),
-);

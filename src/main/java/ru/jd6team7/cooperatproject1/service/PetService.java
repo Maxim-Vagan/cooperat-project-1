@@ -16,18 +16,31 @@ import java.util.List;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
+/**
+ * Класс, описывающий логику работы с сущностью Питомец (Pet)
+ * Через интерфейс репозитория {@link PetRepository} осуществляются
+ * основные манипуляции с данными по Питомцам. Запись, чтение, удаление,
+ * вывод списков Питомцев по критериям запросов
+ */
 @Service
 public class PetService {
+    /** Поле хранит значение общей папке с файлами фото питомцев */
     @Value("${pets.photos.dir.path}")
     private String picturePath;
-
+    /** Объект репозитория для работы с данными, хранящимися в БД */
     private final PetRepository petRepo;
+    /** Объект Логера для вывода лог-сообщений в файл лог-журнала */
     private final Logger logger = LoggerFactory.getLogger("ru.telbot.file");
 
     public PetService(PetRepository petRepo) {
         this.petRepo = petRepo;
     }
 
+    /**
+     * Метод возвращает расширение файла, полученного через входящее значение переменной
+     * @param inpPath
+     * @return <i><b>пример:</b></i> jpg, bmp, png
+     */
     private String getExtensionOfFile(String inpPath){
         if (inpPath.contains(".")){
             return inpPath.substring(inpPath.lastIndexOf("."), inpPath.length());
@@ -36,20 +49,31 @@ public class PetService {
         }
     }
 
-    // Create
-
+    /**
+     * Метод добавления записи о Питомце в БД
+     * @param inpPet
+     * @return Возвращает созданный экземпляр Питомца
+     */
     public Pet addPet(Pet inpPet) {
         logger.debug("Вызван метод addPet с inpPet = " + inpPet.getPetName());
         return petRepo.save(inpPet);
     }
-    // Read
 
+    /**
+     * Метод чтения записи о Питомце из БД. Поиск по идентификатору Питомца
+     * @param inpId
+     * @return Возвращает найденный экземпляр Питомца, либо Пустоту
+     */
     public Pet findPet(long inpId) {
         logger.debug("Вызван метод findPet с inpId = " + inpId);
         return petRepo.findById(inpId).orElse(null);
     }
-    // Update
 
+    /**
+     * Метод перезаписи данных о Питомце
+     * @param inpUpdatedPet
+     * @return Возвращает перезаписанную информацию о Питомце
+     */
     public Pet updatePet(Pet inpUpdatedPet) {
         Pet updatedFaculty = findPet(inpUpdatedPet.getId());
         updatedFaculty.setPetName(inpUpdatedPet.getPetName());
@@ -57,43 +81,72 @@ public class PetService {
         logger.debug("Вызван метод updatePet с inpUpdatedPet.getPetid = " + inpUpdatedPet.getId());
         return petRepo.save(inpUpdatedPet);
     }
-    // Delete
 
+    /**
+     * Метод удаления данных о Питомце. Поиск по идентификатору
+     * @param inpId
+     */
     public void deletePet(long inpId) {
         logger.debug("Удаление данных о Питомце с ID = " + inpId);
         petRepo.deleteById(inpId);
     }
-    // Read
 
+    /**
+     * Метод возвращает список питомцев-малышей, которые могут быть доступны Посетителю для общения
+     * @return
+     */
     public List<Pet> getKidsPetsForVisitor() {
         logger.debug("Вызван метод getKidsPetsForVisitor");
         return petRepo.getKidsPetsForVisitor();
     }
-    // Read
 
+    /**
+     * Метод возвращает список взрослых питомцев, которые могут быть доступны Посетителю для общения
+     * @return
+     */
     public List<Pet> getAdultPetsForVisitor() {
         logger.debug("Вызван метод getAdultPetsForVisitor");
         return petRepo.getAdultPetsForVisitor();
     }
-    // Read
 
+    /**
+     * Метод возвращает весь список питомцев-малышей. Питомцы младше возраста
+     * @param inpAge
+     * @return
+     */
     public List<Pet> getAllKidsPets(Integer inpAge) {
         logger.debug("Вызван метод getAllKidsPets с параметром inpAge = " + inpAge);
         return petRepo.getAllByAgeBefore(inpAge);
     }
-    // Read
 
+    /**
+     * Метод возвращает весь список взрослых питомцев. Питомцы старше возраста
+     * @param inpAge
+     * @return
+     */
     public List<Pet> getAllAdultPets(Integer inpAge) {
         logger.debug("Вызван метод getAllAdultPets с параметром inpAge = " + inpAge);
         return petRepo.getAllByAgeAfter(inpAge);
     }
-    // Read
 
+    /**
+     * Метод возвращает всех Питомцев, имеющих выбранное состояние(в приюте, у посетителя, у усыновителя, отсутствует, усыновлён)
+     * @param inpState
+     * @return Список Питомцев
+     */
     public List<Pet> getAllPetsWithState(String inpState) {
         logger.debug("Вызван метод getAllPetsWithState с параметром inpState = " + inpState);
         return petRepo.getAllByCurrentStateLike(inpState);
     }
 
+    /**
+     * Метод добавляет картинку Питомца во внутренную папку для фото.
+     * Прописывает путь к файлу в качестве Поля сущности Питомец
+     * для вывода при запросе
+     * @param petID
+     * @param inpPicture
+     * @throws IOException
+     */
     public void addPetPhoto(Long petID, MultipartFile inpPicture) throws IOException {
         Pet curPet = petRepo.findById(petID).orElse(null);
         if (curPet == null) {
