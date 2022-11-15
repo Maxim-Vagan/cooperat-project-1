@@ -19,7 +19,7 @@ public class Visitor {
 
     public enum MessageStatus {BASE, SHELTER_INFO, GET_PET_INFO, GET_CALLBACK}
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
     String name;
     @Column(name = "phone_number")

@@ -43,11 +43,10 @@ alter table visitor add need_callback boolean;
 create table if not exists pet
 (
     id BIGSERIAL NOT NULL,
-    petName varchar(255),
-    animalKind varchar(255),
-    animalGender varchar(255),
+    pet_name varchar(255),
+    animal_kind varchar(255),
+    animal_gender varchar(255),
     age integer,
-    currentState varchar(255),
-    pathFileToPhoto varchar(255),
+    current_state varchar(255),
     CONSTRAINT pet_pkey PRIMARY KEY (id)
 );
