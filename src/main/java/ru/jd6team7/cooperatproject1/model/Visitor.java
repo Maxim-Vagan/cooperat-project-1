@@ -17,9 +17,9 @@ import java.util.Objects;
 @Setter
 public class Visitor {
 
-    public enum MessageStatus {BASE, SHELTER_INFO, GET_PET_INFO}
+    public enum MessageStatus {BASE, SHELTER_INFO, GET_PET_INFO, GET_CALLBACK}
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
     String name;
     @Column(name = "phone_number")
@@ -29,7 +29,10 @@ public class Visitor {
     @Column(name = "chat_id")
     long chatId;
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     MessageStatus messageStatus;
+    @Column(name = "need_callback")
+    boolean needCallback;
 
     public Visitor(Long id, @NonNull String name, @NonNull String phoneNumber, String email, long chatId, MessageStatus messageStatus) {
         this.id = id;
@@ -39,11 +42,9 @@ public class Visitor {
         this.chatId = chatId;
         this.messageStatus = messageStatus;
     }
-
     public Visitor(long chatId) {
         this.chatId = chatId;
     }
-
     public Visitor() {
 
     }

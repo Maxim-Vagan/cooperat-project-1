@@ -15,8 +15,8 @@ create table if not exists notification_task
 create table if not exists shelter
 (
     id      integer
-        constraint id
-            primary key,
+    constraint shelter_id_pkey
+    primary key,
     name    text,
     name_of_director text,
     address text,
@@ -27,11 +27,14 @@ create table if not exists shelter
 create table if not exists visitor
 (
     id      integer
-    constraint id
+    constraint visitor_id_pkey
     primary key,
     name    text,
     phone_number text,
-    email text,
+    email   text,
     chat_id integer,
-    status text
+    status  text
 );
+
+-- changeset mkachalov:3
+alter table visitor add need_callback boolean;
