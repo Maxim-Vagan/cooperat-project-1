@@ -5,9 +5,8 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Service;
+import ru.jd6team7.cooperatproject1.distributor.Distributor;
 import ru.jd6team7.cooperatproject1.model.Visitor;
-import ru.jd6team7.cooperatproject1.sender.BaseSender;
-import ru.jd6team7.cooperatproject1.sender.InfoShelterSender;
 import ru.jd6team7.cooperatproject1.service.VisitorService;
 
 import javax.annotation.PostConstruct;
@@ -19,18 +18,16 @@ public class BotUpdatesListener implements UpdatesListener {
 
     private final TelegramBot telegramBot;
     private final VisitorService visitorService;
-    private final BaseSender baseSender;
-    private final InfoShelterSender infoShelterSender;
+    private final Distributor distributor;
     private final String NEW_VISITOR = "Здравствуйте. Я бот-ассистент приюта для животных. Сделан, чтобы творить добро." +
             "* Узнать информацию о приюте (Этап 1 /info)\r\n" +
             "* Как взять питомца из приюта (Этап-2 /takePet)\r\n" +
             "* Прислать отчет о питомце (Этап-3 /sendReport)\r\n" +
             "* Позвать волонтёра (/help)";
-    public BotUpdatesListener (TelegramBot telegramBot, VisitorService visitorService, BaseSender baseSender, InfoShelterSender infoShelterSender) {
+    public BotUpdatesListener (TelegramBot telegramBot, VisitorService visitorService, Distributor distributor) {
         this.telegramBot = telegramBot;
         this.visitorService = visitorService;
-        this.baseSender = baseSender;
-        this.infoShelterSender = infoShelterSender;
+        this.distributor = distributor;
     }
 
     @PostConstruct
@@ -50,7 +47,7 @@ public class BotUpdatesListener implements UpdatesListener {
     }
 
     /** Читает сообщения. Если пользователь новый - добавляет его в БД
-     * Смотрит на статус пользователя, отправляет в нужный сендер
+     * Делегирует обработку и распределение Дистрибьютору
      */
     @Override
     public int process(List<Update> updates) {
@@ -61,12 +58,7 @@ public class BotUpdatesListener implements UpdatesListener {
                 visitorService.addVisitor(update.message().chat().id());
                 telegramBot.execute(new SendMessage(update.message().chat().id(), NEW_VISITOR));
             } else {
-                String status = visitor.getMessageStatus().toString();
-                if(status.equals("BASE")) {
-                    baseSender.sendInfo(visitor.getChatId(), message);
-                } else if(status.equals("SHELTER_INFO")) {
-                    infoShelterSender.sendInfo(visitor.getChatId(), message);
-                }
+                distributor.getDistribute(update.message().chat().id(), message);
             }
 
         });
