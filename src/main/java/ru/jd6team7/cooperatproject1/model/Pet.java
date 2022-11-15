@@ -3,10 +3,7 @@ package ru.jd6team7.cooperatproject1.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 /*
@@ -20,11 +17,16 @@ public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    @Column(name = "pet_name")
     String petName;
+    @Column(name = "animal_kind")
     String animalKind;
+    @Column(name = "animal_gender")
     String animalGender;
     Integer age;
+    @Column(name = "current_state")
     String currentState;
+    @Column(name = "path_file_to_photo")
     String pathFileToPhoto;
 
     @Override

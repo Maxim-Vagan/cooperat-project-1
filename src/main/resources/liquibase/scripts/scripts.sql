@@ -49,5 +49,5 @@ create table if not exists pet
     age integer,
     currentState varchar(255),
     pathFileToPhoto varchar(255),
-    CONSTRAINT pet_pkey PRIMARY KEY (id),
+    CONSTRAINT pet_pkey PRIMARY KEY (id)
 );
