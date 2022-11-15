@@ -1,4 +1,6 @@
 /target/
 *.eml
 *.xml
+*.log
 /logs/
+/src/main/resources/static/pets_photos/
