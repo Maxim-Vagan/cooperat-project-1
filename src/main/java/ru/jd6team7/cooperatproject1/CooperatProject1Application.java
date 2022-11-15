@@ -7,7 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CooperatProject1Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(CooperatProject1Application.class, args);
+        try {
+
+            SpringApplication.run(CooperatProject1Application.class, args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
