@@ -16,9 +16,9 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
     /** Показать всех взрослых питомцев */
     List<Pet> getAllByAgeAfter(Integer petAge);
     /** Показать всех маленьких питомцев, которые в Приюте и свободны для Посетителя */
-    @Query(value = "SELECT * FROM pet WHERE currentState = 'в приюте' AND age < 1.5", nativeQuery = true)
+    @Query(value = "SELECT * FROM pet WHERE currentState = 'в приюте' AND age < 1", nativeQuery = true)
     List<Pet> getKidsPetsForVisitor();
     /** Показать всех взрослых питомцев, которые в Приюте и свободны для Посетителя */
-    @Query(value = "SELECT * FROM pet WHERE currentState = 'в приюте' AND age >= 1.5", nativeQuery = true)
+    @Query(value = "SELECT * FROM pet WHERE currentState = 'в приюте' AND age >= 2", nativeQuery = true)
     List<Pet> getAdultPetsForVisitor();
 }

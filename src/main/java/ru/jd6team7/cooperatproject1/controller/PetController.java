@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -83,7 +82,7 @@ public class PetController {
         try (InputStream inpStream = Files.newInputStream(imagePath);
              OutputStream outStream = response.getOutputStream();
         ){
-//            response.setContentType(resultEntity.getMediaType());
+            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
 //            response.setContentLength((int) resultEntity.getFileSize());
             inpStream.transferTo(outStream);
             response.setStatus(201);
@@ -123,7 +122,7 @@ public class PetController {
                             schema = @Schema(implementation = Pet.class)
                     )
             ),
-            responses = {
+            /*responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Данные записаны!",
@@ -131,7 +130,7 @@ public class PetController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     array = @ArraySchema(schema = @Schema(implementation = Pet.class))
                             )
-                    )},
+                    )},*/
             tags = "Pet"
     )
     @PostMapping(path = "{petID}/setPhoto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

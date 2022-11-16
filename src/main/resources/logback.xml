@@ -29,6 +29,6 @@
         <appender-ref ref="CONSOLE"/>
     </logger>
     <root level="debug">
-        <appender-ref ref="FILE-ROLLING"/>
+        <appender-ref ref="CONSOLE"/>
     </root>
 </Configuration>

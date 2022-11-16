@@ -50,3 +50,14 @@ create table if not exists pet
     current_state varchar(255),
     CONSTRAINT pet_pkey PRIMARY KEY (id)
 );
+
+-- changeset maxvagan:3
+create table if not exists volunteer
+(
+    id BIGSERIAL NOT NULL,
+    name varchar(255),
+    surname varchar(255),
+    lastname varchar(255),
+    phone_number varchar(255),
+    CONSTRAINT volunteer_id_pkey PRIMARY KEY (id)
+);

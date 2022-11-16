@@ -153,7 +153,7 @@ public class PetService {
             throw new PetNotFoundException("К сожалению Питомца с идентификатором (id = " + petID + ") Нет!");
         }
         logger.debug("Вызван метод addPetPhoto");
-        Path imagePath = Path.of(picturePath, curPet.getPetName() + curPet.getId() + getExtensionOfFile(inpPicture.getOriginalFilename()));
+        Path imagePath = Path.of(picturePath + '/' + curPet.getPetName() + curPet.getId() + getExtensionOfFile(inpPicture.getOriginalFilename()));
         Files.createDirectories(imagePath.getParent());
         Files.deleteIfExists(imagePath);
         // Создание потоков и вызов метода передачи данных по 1-му килобайту
@@ -165,7 +165,7 @@ public class PetService {
         ) {
             bufInpStream.transferTo(bufOutStream);
         }
-        curPet.setPathFileToPhoto(imagePath.getFileName().toString());
+        curPet.setPathFileToPhoto(imagePath.toFile().getPath());
         logger.debug("Сохранение пути к Фото Питомца в репозиторий");
         petRepo.save(curPet);
     }
