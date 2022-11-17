@@ -7,11 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.jd6team7.cooperatproject1.exceptions.PetNotFoundException;
 import ru.jd6team7.cooperatproject1.model.Pet;
+import ru.jd6team7.cooperatproject1.model.PetState;
 import ru.jd6team7.cooperatproject1.repository.PetRepository;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.EnumMap;
 import java.util.List;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
@@ -31,9 +33,17 @@ public class PetService {
     private final PetRepository petRepo;
     /** Объект Логера для вывода лог-сообщений в файл лог-журнала */
     private final Logger logger = LoggerFactory.getLogger("ru.telbot.file");
+    /** Объект перечисляемого словаря статуса Питомца */
+    private EnumMap<PetState, String> enumMap;
 
     public PetService(PetRepository petRepo) {
         this.petRepo = petRepo;
+        enumMap = new EnumMap<PetState, String>(PetState.class);
+        enumMap.put(PetState.AT_SHELTER, "в приюте");
+        enumMap.put(PetState.WITH_VISITOR, "у посетителя");
+        enumMap.put(PetState.WITH_GUARDIAN, "у опекуна");
+        enumMap.put(PetState.STAY_OUT, "отсутствует");
+        enumMap.put(PetState.ADOPTED, "усыновлён");
     }
 
     /**
@@ -168,5 +178,20 @@ public class PetService {
         curPet.setPathFileToPhoto(imagePath.toFile().getPath());
         logger.debug("Сохранение пути к Фото Питомца в репозиторий");
         petRepo.save(curPet);
+    }
+
+    /**
+     * Метод установки статуса Питомца путём выбора из перечисляемого типа мапы
+     * @param inpPetState
+     * @return Возвращает изменённый экземпляр Питомца
+     */
+    public Pet putPetState(long petID, PetState inpPetState) {
+        Pet curPet = petRepo.findById(petID).orElse(null);
+        if (curPet == null) {
+            throw new PetNotFoundException("К сожалению Питомца с идентификатором (id = " + petID + ") Нет!");
+        }
+        logger.debug("Вызван метод putPetState с inpPetState = " + inpPetState.name() + " для Питомца с petID = " + petID);
+        curPet.setCurrentState(enumMap.get(inpPetState));
+        return petRepo.save(curPet);
     }
 }

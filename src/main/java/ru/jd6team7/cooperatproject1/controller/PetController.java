@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.jd6team7.cooperatproject1.exceptions.PetNotFoundException;
 import ru.jd6team7.cooperatproject1.model.Pet;
+import ru.jd6team7.cooperatproject1.model.PetState;
 import ru.jd6team7.cooperatproject1.service.PetService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -189,5 +190,38 @@ public class PetController {
         petService.deletePet(petID);
         return ResponseEntity.ok().build();
     }
-
+    @Operation(
+            summary = "Обновление статуса Питомца",
+/*            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Pet.class)
+                    )
+            ),*/
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Данные записаны!",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    array = @ArraySchema(schema = @Schema(implementation = Pet.class))
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Питомца с ИД номером не найдено"
+                    )},
+            tags = "Pet"
+    )
+    @PutMapping("/setPetState")
+    public ResponseEntity<Pet> updatePetState(@Parameter(description = "ИД номер Питомца") @RequestParam Long petID,
+                                              @Parameter(description = "статус Питомца") @RequestParam PetState inpState) {
+        Pet resultEntity = petService.findPet(petID);
+        if (resultEntity != null) {
+            petService.putPetState(petID, inpState);
+            return ResponseEntity.ok(resultEntity);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

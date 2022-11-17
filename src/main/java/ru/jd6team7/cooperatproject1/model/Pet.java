@@ -29,6 +29,8 @@ public class Pet {
     @Column(name = "path_file_to_photo")
     String pathFileToPhoto;
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
