@@ -13,7 +13,6 @@ import ru.jd6team7.cooperatproject1.repository.PetRepository;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.EnumMap;
 import java.util.List;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
@@ -33,17 +32,9 @@ public class PetService {
     private final PetRepository petRepo;
     /** Объект Логера для вывода лог-сообщений в файл лог-журнала */
     private final Logger logger = LoggerFactory.getLogger("ru.telbot.file");
-    /** Объект перечисляемого словаря статуса Питомца */
-    private EnumMap<PetState, String> enumMap;
 
     public PetService(PetRepository petRepo) {
         this.petRepo = petRepo;
-        enumMap = new EnumMap<PetState, String>(PetState.class);
-        enumMap.put(PetState.AT_SHELTER, "в приюте");
-        enumMap.put(PetState.WITH_VISITOR, "у посетителя");
-        enumMap.put(PetState.WITH_GUARDIAN, "у опекуна");
-        enumMap.put(PetState.STAY_OUT, "отсутствует");
-        enumMap.put(PetState.ADOPTED, "усыновлён");
     }
 
     /**
@@ -85,25 +76,39 @@ public class PetService {
      * @return Возвращает перезаписанную информацию о Питомце
      */
     public Pet updatePet(Pet inpUpdatedPet) {
-        Pet updatedFaculty = findPet(inpUpdatedPet.getId());
-        updatedFaculty.setPetName(inpUpdatedPet.getPetName());
-        updatedFaculty.setAge(inpUpdatedPet.getAge());
-        logger.debug("Вызван метод updatePet с inpUpdatedPet.getPetid = " + inpUpdatedPet.getId());
-        return petRepo.save(inpUpdatedPet);
+        Pet updatedPet = petRepo.findById(inpUpdatedPet.getId()).orElse(null);
+        if (updatedPet != null){
+            updatedPet.setPetName(inpUpdatedPet.getPetName());
+            updatedPet.setAge(inpUpdatedPet.getAge());
+            updatedPet.setAnimalGender(inpUpdatedPet.getAnimalGender());
+            updatedPet.setAnimalKind(inpUpdatedPet.getAnimalKind());
+            updatedPet.setCurrentState(inpUpdatedPet.getCurrentState());
+            updatedPet.setPathFileToPhoto(inpUpdatedPet.getPathFileToPhoto());
+            logger.debug("Вызван метод updatePet с inpUpdatedPet.getPetid = " + inpUpdatedPet.getId());
+            return petRepo.save(updatedPet);
+        } else {
+            return null;
+        }
     }
 
     /**
      * Метод удаления данных о Питомце. Поиск по идентификатору
      * @param inpId
+     * @return
      */
-    public void deletePet(long inpId) {
+    public Boolean deletePet(long inpId) {
         logger.debug("Удаление данных о Питомце с ID = " + inpId);
         petRepo.deleteById(inpId);
+        if (findPet(inpId)==null){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
      * Метод возвращает список питомцев-малышей, которые могут быть доступны Посетителю для общения
-     * @return
+     * @return Список объектов класса Питомец, может быть возвращена Пустота
      */
     public List<Pet> getKidsPetsForVisitor() {
         logger.debug("Вызван метод getKidsPetsForVisitor");
@@ -112,7 +117,7 @@ public class PetService {
 
     /**
      * Метод возвращает список взрослых питомцев, которые могут быть доступны Посетителю для общения
-     * @return
+     * @return Список объектов класса Питомец, может быть возвращена Пустота
      */
     public List<Pet> getAdultPetsForVisitor() {
         logger.debug("Вызван метод getAdultPetsForVisitor");
@@ -122,7 +127,7 @@ public class PetService {
     /**
      * Метод возвращает весь список питомцев-малышей. Питомцы младше возраста
      * @param inpAge
-     * @return
+     * @return Список объектов класса Питомец, может быть возвращена Пустота
      */
     public List<Pet> getAllKidsPets(Integer inpAge) {
         logger.debug("Вызван метод getAllKidsPets с параметром inpAge = " + inpAge);
@@ -132,7 +137,7 @@ public class PetService {
     /**
      * Метод возвращает весь список взрослых питомцев. Питомцы старше возраста
      * @param inpAge
-     * @return
+     * @return Список объектов класса Питомец, может быть возвращена Пустота
      */
     public List<Pet> getAllAdultPets(Integer inpAge) {
         logger.debug("Вызван метод getAllAdultPets с параметром inpAge = " + inpAge);
@@ -140,9 +145,9 @@ public class PetService {
     }
 
     /**
-     * Метод возвращает всех Питомцев, имеющих выбранное состояние(в приюте, у посетителя, у усыновителя, отсутствует, усыновлён)
+     * Метод возвращает всех Питомцев, имеющих выбранный статус (в приюте, у посетителя, у усыновителя, отсутствует, усыновлён)
      * @param inpState
-     * @return Список Питомцев
+     * @return  Список объектов класса Питомец, может быть возвращена Пустота
      */
     public List<Pet> getAllPetsWithState(String inpState) {
         logger.debug("Вызван метод getAllPetsWithState с параметром inpState = " + inpState);
@@ -156,6 +161,7 @@ public class PetService {
      * @param petID
      * @param inpPicture
      * @throws IOException
+     * @return
      */
     public void addPetPhoto(Long petID, MultipartFile inpPicture) throws IOException {
         Pet curPet = petRepo.findById(petID).orElse(null);
@@ -190,8 +196,9 @@ public class PetService {
         if (curPet == null) {
             throw new PetNotFoundException("К сожалению Питомца с идентификатором (id = " + petID + ") Нет!");
         }
-        logger.debug("Вызван метод putPetState с inpPetState = " + inpPetState.name() + " для Питомца с petID = " + petID);
-        curPet.setCurrentState(enumMap.get(inpPetState));
+        logger.debug("Вызван метод putPetState с inpPetState = " + inpPetState.getCode() + " для Питомца с petID = " + petID);
+//        curPet.setCurrentState(enumMap.get(inpPetState));
+        curPet.setCurrentState(inpPetState.getCode());
         return petRepo.save(curPet);
     }
 }

@@ -43,4 +43,17 @@ public class Pet {
     public int hashCode() {
         return Objects.hash(getPetName(), getAnimalKind(), getAnimalGender(), getAge(), getCurrentState());
     }
+
+    @Override
+    public String toString() {
+        return "Pet{" +
+                "id=" + id +
+                ", petName='" + petName + '\'' +
+                ", animalKind='" + animalKind + '\'' +
+                ", animalGender='" + animalGender + '\'' +
+                ", age=" + age +
+                ", currentState='" + currentState + '\'' +
+                ", pathFileToPhoto='" + pathFileToPhoto + '\'' +
+                '}';
+    }
 }
