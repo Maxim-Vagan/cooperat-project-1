@@ -8,7 +8,7 @@
         <version>2.7.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>ru.maxvagan</groupId>
+    <groupId>ru.jd6team7</groupId>
     <artifactId>cooperat-project-1</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cooperat-project-1</name>
@@ -51,6 +51,7 @@
             <artifactId>java-telegram-bot-api</artifactId>
             <version>5.7.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
