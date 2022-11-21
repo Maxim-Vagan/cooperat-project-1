@@ -20,19 +20,19 @@ public class Visitor {
     public enum MessageStatus {BASE, SHELTER_INFO, GET_PET_INFO, GET_CALLBACK}
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    Long id;
-    String name;
+    private Long id;
+    private String name;
     @Column(name = "phone_number")
-    String phoneNumber;
-    String email;
+    private String phoneNumber;
+    private String email;
     @NonNull
     @Column(name = "chat_id")
-    long chatId;
+    private long chatId;
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    MessageStatus messageStatus;
+    private MessageStatus messageStatus;
     @Column(name = "need_callback")
-    boolean needCallback;
+    private boolean needCallback;
 
     public Visitor(Long id, @NonNull String name, @NonNull String phoneNumber, String email, long chatId, MessageStatus messageStatus) {
         this.id = id;
