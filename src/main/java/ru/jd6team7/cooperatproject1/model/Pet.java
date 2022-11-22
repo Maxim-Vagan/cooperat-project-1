@@ -17,6 +17,8 @@ public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    @Column(name = "pet_id")
+    Long petID;
     @Column(name = "pet_name")
     String petName;
     @Column(name = "animal_kind")
@@ -47,7 +49,7 @@ public class Pet {
     @Override
     public String toString() {
         return "Pet{" +
-                "id=" + id +
+                "petID=" + petID +
                 ", petName='" + petName + '\'' +
                 ", animalKind='" + animalKind + '\'' +
                 ", animalGender='" + animalGender + '\'' +

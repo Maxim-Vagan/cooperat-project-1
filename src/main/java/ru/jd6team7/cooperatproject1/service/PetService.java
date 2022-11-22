@@ -67,7 +67,7 @@ public class PetService {
      */
     public Pet findPet(long inpId) {
         logger.debug("Вызван метод findPet с inpId = " + inpId);
-        return petRepo.findById(inpId).orElse(null);
+        return petRepo.getPetByPetID(inpId).orElse(null);
     }
 
     /**
@@ -76,7 +76,7 @@ public class PetService {
      * @return Возвращает перезаписанную информацию о Питомце
      */
     public Pet updatePet(Pet inpUpdatedPet) {
-        Pet updatedPet = petRepo.findById(inpUpdatedPet.getId()).orElse(null);
+        Pet updatedPet = petRepo.getPetByPetID(inpUpdatedPet.getPetID()).orElse(null);
         if (updatedPet != null){
             updatedPet.setPetName(inpUpdatedPet.getPetName());
             updatedPet.setAge(inpUpdatedPet.getAge());
@@ -84,7 +84,7 @@ public class PetService {
             updatedPet.setAnimalKind(inpUpdatedPet.getAnimalKind());
             updatedPet.setCurrentState(inpUpdatedPet.getCurrentState());
             updatedPet.setPathFileToPhoto(inpUpdatedPet.getPathFileToPhoto());
-            logger.debug("Вызван метод updatePet с inpUpdatedPet.getPetid = " + inpUpdatedPet.getId());
+            logger.debug("Вызван метод updatePet с inpUpdatedPet.getPetid = " + inpUpdatedPet.getPetID());
             return petRepo.save(updatedPet);
         } else {
             return null;
@@ -164,12 +164,12 @@ public class PetService {
      * @return
      */
     public void addPetPhoto(Long petID, MultipartFile inpPicture) throws IOException {
-        Pet curPet = petRepo.findById(petID).orElse(null);
+        Pet curPet = petRepo.getPetByPetID(petID).orElse(null);
         if (curPet == null) {
             throw new PetNotFoundException("К сожалению Питомца с идентификатором (id = " + petID + ") Нет!");
         }
         logger.debug("Вызван метод addPetPhoto");
-        Path imagePath = Path.of(picturePath + '/' + curPet.getPetName() + curPet.getId() + getExtensionOfFile(inpPicture.getOriginalFilename()));
+        Path imagePath = Path.of(picturePath + '/' + curPet.getPetName() + curPet.getPetID() + getExtensionOfFile(inpPicture.getOriginalFilename()));
         Files.createDirectories(imagePath.getParent());
         Files.deleteIfExists(imagePath);
         // Создание потоков и вызов метода передачи данных по 1-му килобайту
@@ -187,17 +187,16 @@ public class PetService {
     }
 
     /**
-     * Метод установки статуса Питомца путём выбора из перечисляемого типа мапы
+     * Метод установки статуса Питомца путём выбора из перечисляемого типа
      * @param inpPetState
      * @return Возвращает изменённый экземпляр Питомца
      */
     public Pet putPetState(long petID, PetState inpPetState) {
-        Pet curPet = petRepo.findById(petID).orElse(null);
+        Pet curPet = petRepo.getPetByPetID(petID).orElse(null);
         if (curPet == null) {
             throw new PetNotFoundException("К сожалению Питомца с идентификатором (id = " + petID + ") Нет!");
         }
         logger.debug("Вызван метод putPetState с inpPetState = " + inpPetState.getCode() + " для Питомца с petID = " + petID);
-//        curPet.setCurrentState(enumMap.get(inpPetState));
         curPet.setCurrentState(inpPetState.getCode());
         return petRepo.save(curPet);
     }

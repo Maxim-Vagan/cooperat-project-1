@@ -14,7 +14,7 @@ public class VisitorService {
         this.visitorRepository = visitorRepository;
     }
 
-    public Visitor addVisitor(long chatId) {
+    public Visitor addVisitor(Long chatId) {
         Visitor visitor = new Visitor(chatId);
         visitor.setMessageStatus(Visitor.MessageStatus.BASE);
         visitorRepository.save(visitor);

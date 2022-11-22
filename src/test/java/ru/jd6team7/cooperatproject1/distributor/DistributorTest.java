@@ -33,7 +33,7 @@ class DistributorTest {
     private Visitor visitor;
     @BeforeEach
     private void init() {
-        visitor = new Visitor(1);
+        visitor = new Visitor(1L);
         visitor.setMessageStatus(Visitor.MessageStatus.BASE);
     }
 

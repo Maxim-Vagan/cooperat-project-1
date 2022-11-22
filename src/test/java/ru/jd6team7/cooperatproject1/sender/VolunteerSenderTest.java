@@ -35,7 +35,7 @@ class VolunteerSenderTest {
 
     @BeforeAll
     static void init() {
-        visitor = new Visitor(1);
+        visitor = new Visitor(1L);
     }
     private final long chatId = 1;
 

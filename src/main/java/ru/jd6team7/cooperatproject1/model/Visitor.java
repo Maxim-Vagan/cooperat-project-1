@@ -20,21 +20,21 @@ public class Visitor {
     public enum MessageStatus {BASE, SHELTER_INFO, GET_PET_INFO, GET_CALLBACK}
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private Integer id;
     private String name;
     @Column(name = "phone_number")
     private String phoneNumber;
     private String email;
     @NonNull
     @Column(name = "chat_id")
-    private long chatId;
+    private Long chatId;
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private MessageStatus messageStatus;
     @Column(name = "need_callback")
     private boolean needCallback;
 
-    public Visitor(Long id, @NonNull String name, @NonNull String phoneNumber, String email, long chatId, MessageStatus messageStatus) {
+    public Visitor(Integer id, @NonNull String name, @NonNull String phoneNumber, String email, Long chatId, MessageStatus messageStatus) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -42,7 +42,7 @@ public class Visitor {
         this.chatId = chatId;
         this.messageStatus = messageStatus;
     }
-    public Visitor(long chatId) {
+    public Visitor(Long chatId) {
         this.chatId = chatId;
     }
     public Visitor() {
