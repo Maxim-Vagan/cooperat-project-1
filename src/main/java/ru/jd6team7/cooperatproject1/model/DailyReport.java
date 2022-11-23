@@ -20,7 +20,7 @@ import java.util.Objects;
 public class DailyReport {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Integer id;
+    private Long id;
     @Column(name = "pet_id")
     private Long petID;
     @Column(name = "create_date")

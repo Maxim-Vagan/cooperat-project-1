@@ -73,7 +73,7 @@ create table if not exists try_period_registry
     pet_id bigint REFERENCES pet(pet_id),
     visitor_id integer REFERENCES visitor(id),
     volunteer_id integer REFERENCES volunteer(id),
-    try_period_status_id varchar(255),
+    try_period_status_id varchar(255) DEFAULT 'ACTIVE',
     start_date timestamp without time zone,
     end_date timestamp without time zone,
     additional_period_end_date timestamp without time zone,
