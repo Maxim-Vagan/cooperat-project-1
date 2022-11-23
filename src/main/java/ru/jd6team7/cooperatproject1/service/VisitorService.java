@@ -1,8 +1,8 @@
 package ru.jd6team7.cooperatproject1.service;
 
-import liquibase.sqlgenerator.core.GetViewDefinitionGeneratorInformix;
 import org.springframework.stereotype.Service;
-import ru.jd6team7.cooperatproject1.model.Visitor;
+import ru.jd6team7.cooperatproject1.model.visitor.DogVisitor;
+import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
 import ru.jd6team7.cooperatproject1.repository.VisitorRepository;
 
 @Service
@@ -31,5 +31,9 @@ public class VisitorService {
 
     public void updateMessageStatus(long chatId, Visitor.MessageStatus messageStatus) {
         visitorRepository.updateMessageStatus(chatId, messageStatus);
+    }
+
+    public void updateShelterStatus(long chatId, Visitor.ShelterStatus shelterStatus) {
+        visitorRepository.updateShelterStatus(chatId, shelterStatus);
     }
 }

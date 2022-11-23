@@ -1,5 +1,5 @@
 -- liquibase formatted sql
--- liquibase precondition
+
 -- changeset maxvagan:1
 create table if not exists notification_task
 (
@@ -26,14 +26,13 @@ create table if not exists shelter
 -- changeset mkachalov:2
 create table if not exists visitor
 (
-    id      integer
+    id      bigint
     constraint visitor_id_pkey
     primary key,
-    name    text,
     phone_number text,
-    email   text,
     chat_id bigint,
-    status  text
+    message_status text,
+    sheler_status text
 );
 
 -- changeset mkachalov:3
