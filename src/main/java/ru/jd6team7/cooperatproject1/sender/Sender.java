@@ -3,7 +3,8 @@ package ru.jd6team7.cooperatproject1.sender;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
-import ru.jd6team7.cooperatproject1.model.Visitor;
+import ru.jd6team7.cooperatproject1.model.visitor.DogVisitor;
+import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
 import ru.jd6team7.cooperatproject1.service.VisitorService;
 
 /** Родитель для сендеров. Каждый сендер отвечает за свой статус сообщений у юзера.

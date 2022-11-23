@@ -26,14 +26,13 @@ create table if not exists shelter
 -- changeset mkachalov:2
 create table if not exists visitor
 (
-    id      integer
+    id      bigint
     constraint visitor_id_pkey
     primary key,
-    name    text,
     phone_number text,
-    email   text,
-    chat_id integer,
-    status  text
+    chat_id bigint,
+    message_status text,
+    sheler_status text
 );
 
 -- changeset mkachalov:3
@@ -60,4 +59,16 @@ create table if not exists volunteer
     lastname varchar(255),
     phone_number varchar(255),
     CONSTRAINT volunteer_id_pkey PRIMARY KEY (id)
+);
+
+-- changeset mkachalov:4
+create table if not exists dog_visitor
+(
+    id      bigint
+    constraint dog_visitor_id_pkey
+    primary key,
+    name    text,
+    phone_number text,
+    email   text,
+    chat_id bigint
 );

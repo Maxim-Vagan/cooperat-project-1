@@ -1,8 +1,10 @@
-package ru.jd6team7.cooperatproject1.sender;
+package ru.jd6team7.cooperatproject1.sender.dogSender;
 
 import com.pengrad.telegrambot.TelegramBot;
 import org.springframework.stereotype.Component;
-import ru.jd6team7.cooperatproject1.model.Visitor;
+import ru.jd6team7.cooperatproject1.model.visitor.DogVisitor;
+import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
+import ru.jd6team7.cooperatproject1.sender.Sender;
 import ru.jd6team7.cooperatproject1.service.VisitorService;
 
 /** Выводит команду особое приветствие на команду /start
@@ -11,19 +13,16 @@ import ru.jd6team7.cooperatproject1.service.VisitorService;
  */
 
 @Component
-public class BaseSender extends Sender{
+public class BaseDogSender extends Sender {
     private final Visitor.MessageStatus status = Visitor.MessageStatus.BASE;
-    private final String INTRO_INFO = "* Узнать информацию о приюте ( Этап 1 /info)\r\n" +
+    private final String INTRO_INFO = "Собачий рай приветствует Вас.\r\n" +
+            "* Выбрать другой приют ( /anotherShelter)\r\n" +
+            "* Узнать информацию о приюте ( Этап 1 /info)\r\n" +
             "* Как взять питомца из приюта ( Этап-2 /takePet)\r\n" +
             "* Прислать отчет о питомце ( Этап-3 /sendReport)\r\n" +
             "* Позвать волонтёра ( /help)";
-    private final String START_MESSAGE = "Здравствуйте. Я бот-ассистент приюта для животных. Сделан, чтобы творить добро." +
-            "* Узнать информацию о приюте (Этап 1 /info)\r\n" +
-            "* Как взять питомца из приюта (Этап-2 /takePet)\r\n" +
-            "* Прислать отчет о питомце (Этап-3 /sendReport)\r\n" +
-            "* Позвать волонтёра (/help)";
 
-    public BaseSender(VisitorService visitorService, TelegramBot telegramBot) {
+    public BaseDogSender(VisitorService visitorService, TelegramBot telegramBot) {
         super(visitorService, telegramBot);
     }
 
@@ -39,8 +38,5 @@ public class BaseSender extends Sender{
     @Override
     public void process(long chatId, String message) {
         super.getIncorrectRequest(chatId);
-    }
-    public void sayHelloAfterStart(long chatId) {
-        sendMessage(chatId, START_MESSAGE);
     }
 }

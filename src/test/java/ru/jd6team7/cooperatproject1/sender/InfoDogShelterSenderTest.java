@@ -1,24 +1,19 @@
 package ru.jd6team7.cooperatproject1.sender;
 
 import com.pengrad.telegrambot.TelegramBot;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.jd6team7.cooperatproject1.sender.dogSender.InfoDogShelterSender;
 import ru.jd6team7.cooperatproject1.service.VisitorService;
 
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(MockitoExtension.class)
-class InfoShelterSenderTest {
+class InfoDogShelterSenderTest {
 
     @Mock
     TelegramBot telegramBot;
@@ -27,7 +22,7 @@ class InfoShelterSenderTest {
 
     @Spy
     @InjectMocks
-    InfoShelterSender iss;
+    InfoDogShelterSender iss;
 
     private final String ABOUT_US = "Мы - Собачий рай. Наша цель - чтобы любая бездомная душа нашла своих любящих хозяев. Собачий рай. Рай там, где мы!";
     private final String ADDRESS_AND_SCHEDULE = "Мы находимся по адресу Голованова 35. Работаем круглочуточно, без выходных";

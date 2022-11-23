@@ -3,7 +3,8 @@ package ru.jd6team7.cooperatproject1.sender;
 import com.pengrad.telegrambot.TelegramBot;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import ru.jd6team7.cooperatproject1.model.Visitor;
+import ru.jd6team7.cooperatproject1.model.visitor.DogVisitor;
+import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
 import ru.jd6team7.cooperatproject1.service.VisitorService;
 
 /** Сендер на callback. Вызывается из любого класса, дистрибьютер перехватывает сообщение /help на любом этапе

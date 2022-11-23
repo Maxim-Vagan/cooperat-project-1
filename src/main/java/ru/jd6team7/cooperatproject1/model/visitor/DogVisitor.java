@@ -1,9 +1,7 @@
-package ru.jd6team7.cooperatproject1.model;
+package ru.jd6team7.cooperatproject1.model.visitor;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -15,9 +13,8 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-public class Visitor {
-
-    public enum MessageStatus {BASE, SHELTER_INFO, GET_PET_INFO, GET_CALLBACK}
+@Table(name = "dog_visitor")
+public class DogVisitor{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -25,27 +22,20 @@ public class Visitor {
     @Column(name = "phone_number")
     private String phoneNumber;
     private String email;
-    @NonNull
     @Column(name = "chat_id")
     private long chatId;
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    private MessageStatus messageStatus;
-    @Column(name = "need_callback")
-    private boolean needCallback;
 
-    public Visitor(Long id, @NonNull String name, @NonNull String phoneNumber, String email, long chatId, MessageStatus messageStatus) {
+    public DogVisitor(Long id, String name, String phoneNumber, String email, long chatId) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.chatId = chatId;
-        this.messageStatus = messageStatus;
     }
-    public Visitor(long chatId) {
+    public DogVisitor(long chatId) {
         this.chatId = chatId;
     }
-    public Visitor() {
+    public DogVisitor() {
 
     }
 
@@ -53,8 +43,8 @@ public class Visitor {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Visitor visitor = (Visitor) o;
-        return name.equals(visitor.name);
+        DogVisitor dogVisitor = (DogVisitor) o;
+        return name.equals(dogVisitor.name);
     }
 
     @Override
