@@ -7,6 +7,7 @@ import org.springframework.lang.NonNull;
 import javax.persistence.*;
 import java.util.Objects;
 
+//Юзер, обратившийся в чат. Содержит инфу о стадии общения с ботом и инфу о чате. Связан с DogVisitor и CatVisitor
 @Entity
 @Getter
 @Setter
@@ -14,7 +15,7 @@ public class Visitor {
 
 
 
-    public enum MessageStatus {BASE, SHELTER_INFO, GET_CALLBACK;}
+    public enum MessageStatus {BASE, SHELTER_INFO, PET_INFO, GET_CALLBACK;}
 
     public enum ShelterStatus {DOG, CAT;}
     @Id

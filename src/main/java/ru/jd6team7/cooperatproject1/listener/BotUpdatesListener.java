@@ -5,8 +5,8 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Service;
+import ru.jd6team7.cooperatproject1.distributor.CatDistributor;
 import ru.jd6team7.cooperatproject1.distributor.DogDistributor;
-import ru.jd6team7.cooperatproject1.model.visitor.DogVisitor;
 import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
 import ru.jd6team7.cooperatproject1.service.VisitorService;
 
@@ -20,14 +20,16 @@ public class BotUpdatesListener implements UpdatesListener {
     private final TelegramBot telegramBot;
     private final VisitorService visitorService;
     private final DogDistributor dogDistributor;
+    private final CatDistributor catDistributor;
     private final String START_MESSAGE = "Здравствуйте. Я бот-ассистент приюта для животных. Сделан, чтобы творить добро." +
             "Выберите, какой приют вас интересует:\r\n" +
             "* Приют для собак \"Собачий рай\" (/dog)\r\n" +
             "* Приют для кошек \"Кошачий рай\" (/cat)";
-    public BotUpdatesListener (TelegramBot telegramBot, VisitorService visitorService, DogDistributor dogDistributor) {
+    public BotUpdatesListener (TelegramBot telegramBot, VisitorService visitorService, DogDistributor dogDistributor, CatDistributor catDistributor) {
         this.telegramBot = telegramBot;
         this.visitorService = visitorService;
         this.dogDistributor = dogDistributor;
+        this.catDistributor = catDistributor;
     }
 
     @PostConstruct
@@ -68,8 +70,8 @@ public class BotUpdatesListener implements UpdatesListener {
                 } else {
                     if(visitor.getShelterStatus().equals(Visitor.ShelterStatus.DOG)) {
                         dogDistributor.getDistribute(update.message().chat().id(), message);
-                    } if (visitor.getShelterStatus().equals(Visitor.ShelterStatus.CAT)) {
-
+                    } else if (visitor.getShelterStatus().equals(Visitor.ShelterStatus.CAT)) {
+                        catDistributor.getDistribute(update.message().chat().id(), message);
                     }
                 }
             }

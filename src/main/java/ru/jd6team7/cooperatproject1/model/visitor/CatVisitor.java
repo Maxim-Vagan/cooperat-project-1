@@ -12,8 +12,9 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@Table(name = "dog_visitor")
-public class DogVisitor{
+@Table(name = "cat_visitor")
+public class CatVisitor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -24,17 +25,17 @@ public class DogVisitor{
     @Column(name = "chat_id")
     private long chatId;
 
-    public DogVisitor(Long id, String name, String phoneNumber, String email, long chatId) {
+    public CatVisitor(Long id, String name, String phoneNumber, String email, long chatId) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.chatId = chatId;
     }
-    public DogVisitor(long chatId) {
+    public CatVisitor(long chatId) {
         this.chatId = chatId;
     }
-    public DogVisitor() {
+    public CatVisitor() {
 
     }
 
@@ -42,8 +43,8 @@ public class DogVisitor{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DogVisitor dogVisitor = (DogVisitor) o;
-        return name.equals(dogVisitor.name);
+        CatVisitor catVisitor = (CatVisitor) o;
+        return name.equals(catVisitor.name);
     }
 
     @Override

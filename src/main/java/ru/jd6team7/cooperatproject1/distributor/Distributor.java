@@ -6,5 +6,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public abstract class Distributor {
+    //Как-то этот метод в наследниках можно описать без дублирования. Там, фактически, один код. Как?)
     public abstract void getDistribute(long chatId, String message);
 }

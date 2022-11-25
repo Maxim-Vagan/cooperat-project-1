@@ -72,3 +72,15 @@ create table if not exists dog_visitor
     email   text,
     chat_id bigint
 );
+
+-- changeset mkachalov:5
+create table if not exists cat_visitor
+(
+    id      bigint
+    constraint cat_visitor_id_pkey
+    primary key,
+    name    text,
+    phone_number text,
+    email   text,
+    chat_id bigint
+);
