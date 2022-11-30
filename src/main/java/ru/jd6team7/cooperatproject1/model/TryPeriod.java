@@ -20,11 +20,12 @@ import java.util.Objects;
 @Setter
 public class TryPeriod {
 
-    private enum TryPeriodStatus{
+    public static enum TryPeriodStatus{
         ACTIVE("действует"),
         PASSED("пройден"),
         EXTENDED("продлён"),
-        FAILED("не пройден");
+        FAILED("не пройден"),
+        CANCELED("отменён");
 
         private final String description;
 
@@ -44,6 +45,8 @@ public class TryPeriod {
     private Long petID;
     @Column(name = "visitor_id")
     private Integer visitorID;
+    @Column(name = "shelter_id")
+    private Integer shelterID;
     @Column(name = "volunteer_id")
     private Integer volunteerID;
     @Column(name = "try_period_status_id")
@@ -63,12 +66,12 @@ public class TryPeriod {
         if (this == o) return true;
         if (!(o instanceof TryPeriod)) return false;
         TryPeriod tryPeriod = (TryPeriod) o;
-        return Objects.equals(getPetID(), tryPeriod.getPetID()) && Objects.equals(getVisitorID(), tryPeriod.getVisitorID()) && Objects.equals(getVolunteerID(), tryPeriod.getVolunteerID()) && getStatus() == tryPeriod.getStatus() && Objects.equals(getStartDate(), tryPeriod.getStartDate()) && Objects.equals(getEndDate(), tryPeriod.getEndDate());
+        return Objects.equals(getPetID(), tryPeriod.getPetID()) && Objects.equals(getShelterID(), tryPeriod.getShelterID()) && Objects.equals(getVisitorID(), tryPeriod.getVisitorID()) && Objects.equals(getVolunteerID(), tryPeriod.getVolunteerID()) && getStatus() == tryPeriod.getStatus() && Objects.equals(getStartDate(), tryPeriod.getStartDate()) && Objects.equals(getEndDate(), tryPeriod.getEndDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPetID(), getVisitorID(), getVolunteerID(), getStatus(), getStartDate(), getEndDate());
+        return Objects.hash(getPetID(), getShelterID(), getVisitorID(), getVolunteerID(), getStatus(), getStartDate(), getEndDate());
     }
 
     @Override
@@ -77,6 +80,7 @@ public class TryPeriod {
                 "id=" + id +
                 ", petID=" + petID +
                 ", visitorID=" + visitorID +
+                ", shelterID=" + shelterID +
                 ", volunteerID=" + volunteerID +
                 ", status=" + status +
                 ", startDate=" + startDate +

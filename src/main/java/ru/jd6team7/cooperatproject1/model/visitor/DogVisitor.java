@@ -23,9 +23,9 @@ public class DogVisitor{
     private String phoneNumber;
     private String email;
     @Column(name = "chat_id")
-    private long chatId;
+    private Long chatId;
 
-    public DogVisitor(Long id, String name, String phoneNumber, String email, long chatId) {
+    public DogVisitor(Long id, String name, String phoneNumber, String email, Long chatId) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;

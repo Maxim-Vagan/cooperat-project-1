@@ -1,6 +1,5 @@
 package ru.jd6team7.cooperatproject1.controller;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -13,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.jd6team7.cooperatproject1.exceptions.TryPeriodNotFoundException;
 import ru.jd6team7.cooperatproject1.model.TryPeriod;
+import ru.jd6team7.cooperatproject1.model.visitor.DogVisitor;
+import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
 import ru.jd6team7.cooperatproject1.service.TryPeriodService;
 
 import java.util.List;
@@ -42,7 +43,8 @@ public class TryPeriodController {
                                             "\"startDate\": \"2022-11-22T10:00:00Z\", " +
                                             "\"endDate\": \"2022-12-22T10:05:00Z\", " +
                                             "\"additionalEndDate\": null, " +
-                                            "\"reasonDescription\": null}",
+                                            "\"reasonDescription\": null, " +
+                                            "\"shelterID\": 1}",
                                     summary = "Пример")
                             }
                     )
@@ -90,7 +92,15 @@ public class TryPeriodController {
                             content = @Content(
                                     mediaType = MediaType.TEXT_HTML_VALUE
                             )
-                    )}, tags = "TryPeriod"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Вннутренняя ошибка (см. логи или дебаг)",
+                            content = @Content(
+                                    mediaType = MediaType.TEXT_HTML_VALUE
+                            )
+                    )
+            }, tags = "TryPeriod"
     )
     @GetMapping("/{shelterID}/{visitorID}")
     public ResponseEntity<List<TryPeriod>> getTryPeriods(@Parameter(description = "ИД номер Приюта") @PathVariable Integer shelterID,
@@ -124,11 +134,53 @@ public class TryPeriodController {
                             )
                     )}, tags = "TryPeriod"
     )
-    @GetMapping("/{shelterID}/{visitorID}/pivot-report")
-    public ResponseEntity<ObjectNode> getPivotReport1(@Parameter(description = "ИД номер Приюта") @PathVariable Integer shelterID,
-                                                                @Parameter(description = "ИД номер Посетителя") @PathVariable Integer visitorID) {
+    @GetMapping("/{shelterID}/pivot-report")
+    public ResponseEntity<List<Object[]>> getPivotReport(@Parameter(description = "ИД номер Приюта") @PathVariable Integer shelterID) {
         try {
-            ObjectNode resultEntity = tryPeriodService.showPivotTryPeriodsReport(shelterID, visitorID);
+            List<Object[]> resultEntity = tryPeriodService.showPivotTryPeriodsReport(shelterID);
+            return ResponseEntity.ok(resultEntity);
+        } catch (TryPeriodNotFoundException tpError) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @Operation(
+            summary = "Обновление данных ИС`а указанного Посетителя данного Приюта",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Данные изменены!",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE//,
+//                                    array = @ArraySchema(schema = @Schema(implementation = TryPeriod.class))
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Указанного ИС не найдено",
+                            content = @Content(
+                                    mediaType = MediaType.TEXT_HTML_VALUE
+                            )
+                    )}, tags = "TryPeriod"
+    )
+    @PutMapping
+    public ResponseEntity<TryPeriod> updateTryPeriodOfVisitor(@RequestBody TryPeriod inpTryP) {
+        try {
+            TryPeriod resultEntity = tryPeriodService.updateTryPeriod(inpTryP);
+            return ResponseEntity.ok(resultEntity);
+        } catch (TryPeriodNotFoundException tpError) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        try {
+            String resultEntity = tryPeriodService.testRepoGetListDebtorsNotification();
             return ResponseEntity.ok(resultEntity);
         } catch (TryPeriodNotFoundException tpError) {
             return ResponseEntity.notFound().build();

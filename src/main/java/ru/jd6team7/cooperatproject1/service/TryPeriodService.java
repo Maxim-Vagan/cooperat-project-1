@@ -1,23 +1,18 @@
 package ru.jd6team7.cooperatproject1.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.tomcat.util.json.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.jd6team7.cooperatproject1.exceptions.TryPeriodNotFoundException;
-import ru.jd6team7.cooperatproject1.model.Pet;
+import ru.jd6team7.cooperatproject1.model.PetState;
 import ru.jd6team7.cooperatproject1.model.TryPeriod;
-import ru.jd6team7.cooperatproject1.model.Visitor;
+import ru.jd6team7.cooperatproject1.model.visitor.DogVisitor;
+import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
+import ru.jd6team7.cooperatproject1.repository.NotificationTaskRepository;
 import ru.jd6team7.cooperatproject1.repository.TryPeriodRepository;
 
-import java.io.StringWriter;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 /**
@@ -30,25 +25,32 @@ import java.util.List;
 @Service
 public class TryPeriodService {
     /** Объект репозитория для работы с данными, хранящимися в БД */
-    private TryPeriodRepository tryPeriodRepo;
+    private final TryPeriodRepository tryPeriodRepo;
+    private final NotificationTaskRepository notifTaskRepo;
+    private final PetService petService;
     /** Объект Логера для вывода лог-сообщений в файл лог-журнала */
     private final Logger logger = LoggerFactory.getLogger("ru.telbot.file");
     /** Константа Json формата */
-    private final String JSON_ROW_REPORT = "{" +
-            "\"visitor\": {\"name\": null, \"phone\": null, \"email\": null}," +
-            "\"tryPeriods\": []}";
+    private final String JSON_ROW_REPORT = """
+            {"visitor": {"name": null, "phone": null, "email": null},
+            "tryPeriods": []}""";
     /** Константа Json формата */
-    private final String TRY_PERIOD_ROW = "tryPeriod: {" +
-            "\"startDate\": null, " +
-            "\"endDate\": null, " +
-            "\"periodStatus\": null, " +
-            "\"apEndDate\": null, " +
-            "\"reasonDescription\": null, " +
-            "\"pet\": {\"ID\": null, \"name\": null}" +
-            "}";
+    private final String TRY_PERIOD_ROW = """
+            "tryPeriod": {
+            "startDate": null,
+            "endDate": null,
+            "periodStatus": null,
+            "apEndDate": null,
+            "reasonDescription": null,
+            "pet": {"ID": null, "name": null}
+            }""";
     /** Конструктор */
-    public TryPeriodService(TryPeriodRepository tryPeriodRepo) {
+    public TryPeriodService(TryPeriodRepository tryPeriodRepo,
+                            NotificationTaskRepository notifTaskRepo,
+                            PetService petService) {
         this.tryPeriodRepo = tryPeriodRepo;
+        this.notifTaskRepo = notifTaskRepo;
+        this.petService = petService;
     }
 
     /**
@@ -58,6 +60,12 @@ public class TryPeriodService {
      */
     public TryPeriod addTryPeriodToVisitor(TryPeriod inpTryP) {
         logger.debug("Вызван метод addTryPeriodToVisitor с inpTryP = " + inpTryP.getPetID() + " >>> " + inpTryP.getVisitorID());
+        String petTableName = tryPeriodRepo.getTableName(inpTryP.getShelterID(), inpTryP.getPetID());
+        switch (petTableName) {
+            case "Dog" -> petService.putDogState(inpTryP.getPetID(), PetState.WITH_GUARDIAN);
+            case "Cat" -> petService.putCatState(inpTryP.getPetID(), PetState.WITH_GUARDIAN);
+            default -> logger.debug("WARN - Не удалось определить тип Питомца!");
+        }
         return tryPeriodRepo.save(inpTryP);
     }
 
@@ -78,49 +86,85 @@ public class TryPeriodService {
         }
     }
 
+    public String testRepoGetListDebtorsNotification() {
+        logger.debug("Вызван метод testRepoGetListDebtorsNotification");
+        String resultList = tryPeriodRepo.getGuardianInfoForNotify(4L);
+        if (resultList.isEmpty()){
+            throw new TryPeriodNotFoundException("Список Visitors Пуст!");
+        } else {
+            return resultList;
+        }
+    }
+
+    //getListDebtorsNotification("vis.*");
     /**
      * Метод возвращает список сводных данных о всех ИС для указанного Посетителя из БД
      * @param inpShelterID
-     * @param inpVisitorID
      * @return Возвращает список массива данных об Опекуне, его ИС и Питомце.
      * Или выбрасывает исключение
      */
-    public ObjectNode showPivotTryPeriodsReport(Integer inpShelterID, Integer inpVisitorID) throws JsonProcessingException {
-        ObjectNode reportJson = (ObjectNode) new ObjectMapper().readTree(String.valueOf(new JSONParser(JSON_ROW_REPORT)));
-        ObjectNode tryPeriodRow = (ObjectNode) new ObjectMapper().readTree(String.valueOf(new JSONParser(TRY_PERIOD_ROW)));
-
-        logger.debug("Вызван метод showPivotTryPeriodsReport с inpShelterID = " + inpShelterID + " и inpVisitorID = " + inpVisitorID);
-        List<Object[]> resultList = tryPeriodRepo.getPivotInfoAboutVisitorTryPeriods(inpShelterID, inpVisitorID);
+    public List<Object[]> showPivotTryPeriodsReport(Integer inpShelterID){
+        logger.debug("Вызван метод showPivotTryPeriodsReport с inpShelterID = " + inpShelterID);
+        List<Object[]> resultList = tryPeriodRepo.getInfoAboutVisitorTryPeriods(inpShelterID);
         if (resultList.isEmpty()){
-            throw new TryPeriodNotFoundException("Список ИС для указанного Посетителя (ИД = " +
-                    + inpVisitorID + ") в данном Питомнике (ИД = )" + inpShelterID + " Пуст!");
+            throw new TryPeriodNotFoundException("Список Опекунов данного Приюта (ИД = )" + inpShelterID + " Пуст!");
         } else {
-            for (Object[] reportDetail : resultList) {
-                Visitor vst = (Visitor) reportDetail[0];
-                TryPeriod trp = (TryPeriod) reportDetail[1];
-                Pet pet = (Pet) reportDetail[2];
-                reportJson.with("visitor").put("name", vst.getName());
-                reportJson.with("visitor").put("phone", vst.getPhoneNumber());
-                reportJson.with("visitor").put("email", vst.getEmail());
-                tryPeriodRow.with("tryPeriod").put("startDate",
-                        trp.getStartDate()
-                                .truncatedTo(ChronoUnit.SECONDS)
-                                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                tryPeriodRow.with("tryPeriod").put("endDate",
-                        trp.getEndDate()
-                                .truncatedTo(ChronoUnit.SECONDS)
-                                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                tryPeriodRow.with("tryPeriod").put("periodStatus", String.valueOf(trp.getStatus()));
-                tryPeriodRow.with("tryPeriod").put("apEndDate",
-                        trp.getAdditionalEndDate()
-                                .truncatedTo(ChronoUnit.SECONDS)
-                                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                tryPeriodRow.with("tryPeriod").put("reasonDescription", trp.getReasonDescription());
-                tryPeriodRow.with("tryPeriod").with("pet").put("ID", pet.getPetID());
-                tryPeriodRow.with("tryPeriod").with("pet").put("name", pet.getPetName());
-                reportJson.withArray("tryPeriods").add(tryPeriodRow);
-            }
-            return reportJson;
+            return resultList;
         }
+    }
+
+    /**
+     * Метод обновляет статус существующего указанного ИС в БД
+     * @param inpTryP
+     * @param newStatus
+     * @return Возвращает обновлённый по статусу экземпляр ИС
+     */
+    private TryPeriod updateTryPeriodStatus(TryPeriod inpTryP, TryPeriod.TryPeriodStatus newStatus){
+        String[] infoParts = tryPeriodRepo.getGuardianInfoForNotify(inpTryP.getId()).split(";");
+        int extendedDays = 0;
+        if (inpTryP.getAdditionalEndDate() != null) {
+            extendedDays = inpTryP.getAdditionalEndDate().compareTo(inpTryP.getEndDate())/(1000*3600*24);
+        }
+        switch (newStatus) {
+            case PASSED -> notifTaskRepo.addNotifOnDate(
+                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+                    String.format("Уважаемый(ая) %s поздравляем! Ваш Испытательный срок пройден!", infoParts[1]),
+                    LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(1L),
+                    Long.decode(infoParts[0])
+            );
+            case EXTENDED -> notifTaskRepo.addNotifOnDate(
+                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+                    String.format("Уважаемый(ая) %s сообщаем\r\n" +
+                            "что Ваш Испытательный срок продлён на %s дней", infoParts[1], extendedDays),
+                    LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(1L),
+                    Long.decode(infoParts[0])
+            );
+            case FAILED -> notifTaskRepo.addNotifOnDate(
+                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+                    String.format("Уважаемый(ая) %s вынуждены сообщить\r\n" +
+                            "что Ваш Испытательный срок Не пройден!\r\n" +
+                            "Для разъяснения причин Вы можете связаться с волонтёром\r\n" +
+                            "%s %s по номеру %s", infoParts[1], infoParts[2], infoParts[3], infoParts[4]),
+                    LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(1L),
+                    Long.decode(infoParts[0])
+            );
+        }
+        inpTryP.setStatus(newStatus);
+        return inpTryP;
+    }
+
+    /**
+     * Метод обновления записи о ИС для указанного Посетителя в БД
+     * @param inpTryP
+     * @return Возвращает обновлённый экземпляр ИС
+     */
+    public TryPeriod updateTryPeriod(TryPeriod inpTryP){
+        TryPeriod resultEntity = tryPeriodRepo.findById(inpTryP.getId()).orElse(null);
+        if (resultEntity!= null){
+            resultEntity.setAdditionalEndDate(inpTryP.getAdditionalEndDate());
+            resultEntity.setReasonDescription(inpTryP.getReasonDescription());
+            tryPeriodRepo.save(updateTryPeriodStatus(resultEntity, inpTryP.getStatus()));
+            return resultEntity;
+        } else { throw new TryPeriodNotFoundException("Не найден обновляемый ИС по его ИД номеру"); }
     }
 }
