@@ -13,11 +13,9 @@ import java.util.Objects;
 @Setter
 public class Visitor {
 
+    public enum MessageStatus {BASE, SHELTER_INFO, PET_INFO, GET_CALLBACK}
 
-
-    public enum MessageStatus {BASE, SHELTER_INFO, PET_INFO, GET_CALLBACK;}
-
-    public enum ShelterStatus {DOG, CAT;}
+    public enum ShelterStatus {DOG, CAT}
     @Id
     @GeneratedValue
     private Long id;

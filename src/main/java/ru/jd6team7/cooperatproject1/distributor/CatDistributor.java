@@ -30,13 +30,12 @@ public class CatDistributor extends Distributor{
         switch (message) {
             case "/info" -> infoCatShelterSender.sendIntro(chatId);
             case "/help" -> volunteerSender.sendIntro(chatId);
-            case "/back", "/dog" -> baseCatSender.sendIntro(chatId);
+            case "/back", "/cat" -> baseCatSender.sendIntro(chatId);
             default -> {
                 switch (status) {
                     case BASE -> baseCatSender.process(chatId, message);
                     case SHELTER_INFO -> infoCatShelterSender.process(chatId, message);
                     case GET_CALLBACK -> volunteerSender.process(chatId, message);
-
                 }
             }
         }

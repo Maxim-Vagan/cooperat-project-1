@@ -36,7 +36,6 @@ public class DogDistributor extends Distributor{
                     case BASE -> baseDogSender.process(chatId, message);
                     case SHELTER_INFO -> infoDogShelterSender.process(chatId, message);
                     case GET_CALLBACK -> volunteerSender.process(chatId, message);
-
                 }
             }
         }
