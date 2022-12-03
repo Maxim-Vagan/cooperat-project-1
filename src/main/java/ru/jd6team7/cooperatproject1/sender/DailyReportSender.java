@@ -115,8 +115,7 @@ public class DailyReportSender extends Sender {
             case "/help" -> volunteerSender.sendIntro(chatId);
             case "/back" -> {
                 if (visitor.getShelterStatus().equals(Visitor.ShelterStatus.DOG)) { super.sendIntro(chatId); }
-                else { //TODO: логика возврата на шаг назад для котов
-                }
+                else { super.sendIntro(chatId); }
             }
             default -> {
                 String petDbInfo = "";
