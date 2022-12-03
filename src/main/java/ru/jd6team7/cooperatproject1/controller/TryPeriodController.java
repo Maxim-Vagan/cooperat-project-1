@@ -176,16 +176,4 @@ public class TryPeriodController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        try {
-            String resultEntity = tryPeriodService.testRepoGetListDebtorsNotification();
-            return ResponseEntity.ok(resultEntity);
-        } catch (TryPeriodNotFoundException tpError) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
-    }
 }

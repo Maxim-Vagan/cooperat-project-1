@@ -12,10 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.jd6team7.cooperatproject1.exceptions.DailyReportEmptyListException;
 import ru.jd6team7.cooperatproject1.model.DailyReport;
+import ru.jd6team7.cooperatproject1.model.Dog;
 import ru.jd6team7.cooperatproject1.model.visitor.DogVisitor;
 import ru.jd6team7.cooperatproject1.service.DailyReportService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/daily-reports")
@@ -24,6 +26,149 @@ public class DailyReportsController {
 
     public DailyReportsController(DailyReportService dailyReportService) {
         this.dailyReportService = dailyReportService;
+    }
+
+    @Operation(
+            summary = "Ввод данных о Ежедневном отчёте за текущую дату данного Приюта",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = DailyReport.class),
+                            examples = {
+                            @ExampleObject(name = "Передаваемое значение в JSON формате",
+                                    value = """
+                                            {
+                                              "id": 0,
+                                              "petID": 1,
+                                              "shelterID": 1,
+                                              "createDate": "2022-12-03T00:29:02",
+                                              "deleteDate": null,
+                                              "fileSize": 0,
+                                              "mediaType": null,
+                                              "photo": null,
+                                              "pathToFile": null,
+                                              "dayDiet": null,
+                                              "mainHealth": null,
+                                              "oldHebits": null,
+                                              "newHebits": null
+                                            }
+                                            """,
+                                    summary = "Пример")
+                    }
+                    )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Данные получены!",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = DailyReport.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Отчётов за текущую дату не найдено"
+                    )}, tags = "DailyReports"
+    )
+    @PostMapping("/report")
+    public ResponseEntity<DailyReport> setDailyReport(@RequestBody DailyReport inpDailyReport) {
+        try{
+            DailyReport resultEntity = dailyReportService.addDailyReportWithEntity(inpDailyReport);
+            return ResponseEntity.ok(resultEntity);
+        } catch (DailyReportEmptyListException dre) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @Operation(
+            summary = "Вывод данных о Ежедневном отчёте по его ИД номеру",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Данные получены!",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = DailyReport.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Отчётов за текущую дату не найдено"
+                    )}, tags = "DailyReports"
+    )
+    @GetMapping("/report")
+    public ResponseEntity<DailyReport> findDailyReport(@Parameter(description = "ИД номер Ежедневного отчёта")
+                                                      @RequestParam Long inpID) {
+        DailyReport resultEntity = dailyReportService.findDailyReport(inpID);
+        try {
+            if (resultEntity != null)
+                return ResponseEntity.ok(resultEntity);
+            else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @Operation(
+            summary = "Изменение данных Ежедневного отчёта",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = DailyReport.class)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Данные получены!",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = DailyReport.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Отчётов за текущую дату не найдено"
+                    )}, tags = "DailyReports"
+    )
+    @PutMapping("/report")
+    public ResponseEntity<DailyReport> updateDailyReport(@RequestBody DailyReport inpDailyReport) {
+        DailyReport resultEntity = dailyReportService.updateDailyReport(inpDailyReport);
+        try {
+            if (resultEntity != null)
+                return ResponseEntity.ok(resultEntity);
+            else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @Operation(
+            summary = "Удаление данных Eжедневного отчёта по его ИД номеру",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Данные удалены!",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = DailyReport.class)
+                            )
+                    )}, tags = "DailyReports"
+    )
+    @DeleteMapping("/report")
+    public ResponseEntity<Boolean> deleteDailyReport(@Parameter(description = "ИД номер Питомца") @RequestParam long ID) {
+        if (dailyReportService.deleteDailyReport(ID)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @Operation(

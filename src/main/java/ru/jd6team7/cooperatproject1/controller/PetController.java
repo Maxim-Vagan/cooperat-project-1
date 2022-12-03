@@ -224,7 +224,7 @@ public class PetController {
 
     @Operation(
             summary = "Обновление статуса Питомца",
-/*            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            /*requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = Dog.class)

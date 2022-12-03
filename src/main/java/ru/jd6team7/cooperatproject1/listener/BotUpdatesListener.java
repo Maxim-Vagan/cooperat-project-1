@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.sun.xml.bind.v2.TODO;
 import org.springframework.stereotype.Service;
 import ru.jd6team7.cooperatproject1.distributor.DogDistributor;
 import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
@@ -61,34 +62,40 @@ public class BotUpdatesListener implements UpdatesListener {
     @Override
     public int process(List<Update> updates) {
 //        return UpdatesListener.CONFIRMED_UPDATES_ALL;
+        notifyer.startChecking();
         updates.forEach(update -> {
             Visitor visitor = visitorService.findVisitor(update.message().chat().id());
-            if (!visitor.getMessageStatus().equals(Visitor.MessageStatus.SEND_DAILY_REPORT)) {
-                if (update.message().text() != null) {
-                    String message = parseNotificationTask(update.message().text());
-                    notifyer.startChecking();
-                    if (visitor == null) {
-                        visitorService.addVisitor(update.message().chat().id());
-                        telegramBot.execute(new SendMessage(update.message().chat().id(), START_MESSAGE));
-                    } else {
-                        if (message.equals("/start") || message.equals("/anotherShelter")) {
-                            telegramBot.execute(new SendMessage(update.message().chat().id(), START_MESSAGE));
-                        } else if (message.equals("/dog")) {
-                            visitorService.updateShelterStatus(update.message().chat().id(), Visitor.ShelterStatus.DOG);
-                            dogDistributor.getDistribute(update.message().chat().id(), message);
-                        } else if (message.equals("/cat")) {
-
-                        } else {
-                            if (visitor.getShelterStatus().equals(Visitor.ShelterStatus.DOG)) {
+            if (visitor == null) {
+                visitorService.addVisitor(update.message().chat().id());
+                telegramBot.execute(new SendMessage(update.message().chat().id(), START_MESSAGE));
+            } else {
+                if (!visitor.getMessageStatus().equals(Visitor.MessageStatus.SEND_DAILY_REPORT)) {
+                    if (update.message().text() != null) {
+                        String message = parseNotificationTask(update.message().text());
+                        switch (message) {
+                            case "/start":
+                            case "/anotherShelter":
+                                telegramBot.execute(new SendMessage(update.message().chat().id(), START_MESSAGE));
+                                break;
+                            case "/dog":
+                                visitorService.updateShelterStatus(update.message().chat().id(), Visitor.ShelterStatus.DOG);
                                 dogDistributor.getDistribute(update.message().chat().id(), message);
-                            } else if (visitor.getShelterStatus().equals(Visitor.ShelterStatus.CAT)) {
-
-                            }
+                                break;
+                            case "/cat":
+                                break; //TODO: продублировать логику для котов
+                            default:
+                                switch (visitor.getShelterStatus()) {
+                                    case DOG:
+                                        dogDistributor.getDistribute(update.message().chat().id(), message);
+                                    case CAT:
+                                        break; //TODO: продублировать логику для котов
+                                }
+                                break;
                         }
                     }
+                } else {
+                    dailyReportSender.processUpdate(visitor.getChatId(), update);
                 }
-            } else {
-                dailyReportSender.processUpdate(visitor.getChatId(), update);
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;

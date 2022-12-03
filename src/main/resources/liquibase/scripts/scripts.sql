@@ -1,4 +1,6 @@
 -- liquibase formatted sql
+-- changeset maxvagan:0
+create sequence hibernate_sequence START 1;
 
 -- changeset maxvagan:1
 create table if not exists notification_task
@@ -32,7 +34,7 @@ create table if not exists visitor
     phone_number text,
     chat_id bigint,
     message_status text,
-    sheler_status text
+    shelter_status text
 );
 
 -- changeset mkachalov:3
@@ -64,23 +66,25 @@ create table if not exists volunteer
 -- changeset maxvagan:4
 alter table dog add column pet_id bigint unique;
 
--- changeset maxvagan:5
-create table if not exists try_period_registry
+-- changeset maxvagan:4.1
+create table if not exists dog_visitor
 (
     id BIGSERIAL NOT NULL,
-    pet_id bigint REFERENCES pets_and_shelters(pet_id),
-    visitor_id integer REFERENCES visitors_and_shelters(visitor_id),
-    volunteer_id integer REFERENCES volunteer(id),
-    try_period_status_id varchar(255) DEFAULT 'ACTIVE',
-    start_date timestamp without time zone,
-    end_date timestamp without time zone,
-    additional_period_end_date timestamp without time zone,
-    reason_description text,
-    shelter_id integer REFERENCES shelter(id)
-    CONSTRAINT tryperiod_id_pkey PRIMARY KEY (id)
+    name varchar(255),
+    phone_number varchar(255),
+    email varchar(255),
+    chat_id bigint,
+    CONSTRAINT dog_visitor_id_pkey PRIMARY KEY (id)
 );
 
--- changeset maxvagan:6
+-- changeset maxvagan:5
+create table if not exists pets_and_shelters
+(
+    id BIGSERIAL NOT NULL,
+    pet_id bigint,
+    shelter_id integer,
+    CONSTRAINT pas_id_pkey PRIMARY KEY (id)
+);
 create table if not exists visitors_and_shelters
 (
     id BIGSERIAL NOT NULL,
@@ -88,12 +92,21 @@ create table if not exists visitors_and_shelters
     shelter_id integer REFERENCES shelter(id),
     CONSTRAINT vas_id_pkey PRIMARY KEY (id)
 );
-create table if not exists pets_and_shelters
+
+-- changeset maxvagan:6
+create table if not exists try_period_registry
 (
     id BIGSERIAL NOT NULL,
-    pet_id bigint REFERENCES dog(pet_id),
+    pet_id bigint,
+    visitor_id integer,
+    volunteer_id integer REFERENCES volunteer(id),
+    try_period_status_id varchar(255) DEFAULT 'ACTIVE',
+    start_date timestamp without time zone,
+    end_date timestamp without time zone,
+    additional_period_end_date timestamp without time zone,
+    reason_description text,
     shelter_id integer REFERENCES shelter(id),
-    CONSTRAINT pas_id_pkey PRIMARY KEY (id)
+    CONSTRAINT tryperiod_id_pkey PRIMARY KEY (id)
 );
 create table if not exists daily_report
 (

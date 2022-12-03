@@ -96,7 +96,7 @@ public interface TryPeriodRepository extends JpaRepository<TryPeriod, Long> {
     final String DAILY_REPORT_PET_INFO = """
             select concat(
                            pet.pet_id, ';' ,pet.shelter_id, ';', pet.pet_name, '-', pet.pet_id, '-',
-                pet.shelter_id, '-', to_char((now() + interval '3 hours'), 'dd.MM.yyyy-hh24.mi.ss'), '.$'
+                pet.shelter_id, '-', to_char(now(), 'dd.MM.yyyy-hh24.mi.ss'), '.$'
                 ) as file_info
             from try_period_registry tpr
                      inner join (select d.pet_id, d.pet_name, d.shelter_id ,'Dog' as kind from dog d

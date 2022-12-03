@@ -86,16 +86,6 @@ public class TryPeriodService {
         }
     }
 
-    public String testRepoGetListDebtorsNotification() {
-        logger.debug("Вызван метод testRepoGetListDebtorsNotification");
-        String resultList = tryPeriodRepo.getGuardianInfoForNotify(4L);
-        if (resultList.isEmpty()){
-            throw new TryPeriodNotFoundException("Список Visitors Пуст!");
-        } else {
-            return resultList;
-        }
-    }
-
     //getListDebtorsNotification("vis.*");
     /**
      * Метод возвращает список сводных данных о всех ИС для указанного Посетителя из БД
@@ -134,17 +124,19 @@ public class TryPeriodService {
             );
             case EXTENDED -> notifTaskRepo.addNotifOnDate(
                     LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
-                    String.format("Уважаемый(ая) %s сообщаем\r\n" +
-                            "что Ваш Испытательный срок продлён на %s дней", infoParts[1], extendedDays),
+                    String.format("""
+                            Уважаемый(ая) %s сообщаем
+                            что Ваш Испытательный срок продлён на %s дней""", infoParts[1], extendedDays),
                     LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(1L),
                     Long.decode(infoParts[0])
             );
             case FAILED -> notifTaskRepo.addNotifOnDate(
                     LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
-                    String.format("Уважаемый(ая) %s вынуждены сообщить\r\n" +
-                            "что Ваш Испытательный срок Не пройден!\r\n" +
-                            "Для разъяснения причин Вы можете связаться с волонтёром\r\n" +
-                            "%s %s по номеру %s", infoParts[1], infoParts[2], infoParts[3], infoParts[4]),
+                    String.format("""
+                            Уважаемый(ая) %s вынуждены сообщить
+                            что Ваш Испытательный срок Не пройден!
+                            Для разъяснения причин Вы можете связаться с волонтёром
+                            %s %s по номеру %s""", infoParts[1], infoParts[2], infoParts[3], infoParts[4]),
                     LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(1L),
                     Long.decode(infoParts[0])
             );

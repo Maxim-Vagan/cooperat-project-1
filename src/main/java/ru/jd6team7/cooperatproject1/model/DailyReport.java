@@ -23,6 +23,8 @@ public class DailyReport {
     private Long id;
     @Column(name = "pet_id")
     private Long petID;
+    @Column(name = "shelter_id")
+    private Integer shelterID;
     @Column(name = "create_date")
     private LocalDateTime createDate;
     @Column(name = "delete_date")
