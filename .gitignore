@@ -1,0 +1,7 @@
+/target/
+*.eml
+*.xml
+*.log
+/logs/
+/src/main/resources/static/pets_photos/
+/src/main/resources/application.properties
