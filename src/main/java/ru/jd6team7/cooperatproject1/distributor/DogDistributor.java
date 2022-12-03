@@ -2,6 +2,7 @@ package ru.jd6team7.cooperatproject1.distributor;
 
 import org.springframework.stereotype.Component;
 import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
+import ru.jd6team7.cooperatproject1.sender.DailyReportSender;
 import ru.jd6team7.cooperatproject1.sender.dogSender.BaseDogSender;
 import ru.jd6team7.cooperatproject1.sender.dogSender.InfoDogShelterSender;
 import ru.jd6team7.cooperatproject1.sender.VolunteerSender;
@@ -16,12 +17,18 @@ public class DogDistributor extends Distributor{
     private final InfoDogShelterSender infoDogShelterSender;
     private final VolunteerSender volunteerSender;
     private final VisitorService visitorService;
+    private final DailyReportSender dailyReportSender;
 
-    public DogDistributor(BaseDogSender baseDogSender, InfoDogShelterSender infoDogShelterSender, VolunteerSender volunteerSender, VisitorService visitorService) {
+    public DogDistributor(BaseDogSender baseDogSender,
+                          InfoDogShelterSender infoDogShelterSender,
+                          VolunteerSender volunteerSender,
+                          VisitorService visitorService,
+                          DailyReportSender dailyReportSender) {
         this.baseDogSender = baseDogSender;
         this.infoDogShelterSender = infoDogShelterSender;
         this.volunteerSender = volunteerSender;
         this.visitorService = visitorService;
+        this.dailyReportSender = dailyReportSender;
     }
 
     @Override
@@ -30,6 +37,7 @@ public class DogDistributor extends Distributor{
         switch (message) {
             case "/info" -> infoDogShelterSender.sendIntro(chatId);
             case "/help" -> volunteerSender.sendIntro(chatId);
+            case "/sendReport" -> dailyReportSender.sendIntro(chatId);
             case "/back", "/dog" -> baseDogSender.sendIntro(chatId);
             default -> {
                 switch (status) {

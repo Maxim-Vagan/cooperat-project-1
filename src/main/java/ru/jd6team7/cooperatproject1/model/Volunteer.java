@@ -16,7 +16,7 @@ import java.util.Objects;
 public class Volunteer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Integer id;
     String name;
     String surname;
     String lastname;

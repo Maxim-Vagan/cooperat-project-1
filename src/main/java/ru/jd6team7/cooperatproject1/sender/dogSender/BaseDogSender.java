@@ -16,11 +16,11 @@ import ru.jd6team7.cooperatproject1.service.VisitorService;
 public class BaseDogSender extends Sender {
     private final Visitor.MessageStatus status = Visitor.MessageStatus.BASE;
     private final String INTRO_INFO = "Собачий рай приветствует Вас.\r\n" +
-            "* Выбрать другой приют ( /anotherShelter)\r\n" +
-            "* Узнать информацию о приюте ( Этап 1 /info)\r\n" +
-            "* Как взять питомца из приюта ( Этап-2 /takePet)\r\n" +
-            "* Прислать отчет о питомце ( Этап-3 /sendReport)\r\n" +
-            "* Позвать волонтёра ( /help)";
+            "- Выбрать другой приют ( /anotherShelter)\r\n" +
+            "- Узнать информацию о приюте ( Этап 1 /info)\r\n" +
+            "- Как взять питомца из приюта ( Этап-2 /takePet)\r\n" +
+            "- Прислать отчет о питомце ( Этап-3 /sendReport)\r\n" +
+            "- Позвать волонтёра ( /help)";
 
     public BaseDogSender(VisitorService visitorService, TelegramBot telegramBot) {
         super(visitorService, telegramBot);
