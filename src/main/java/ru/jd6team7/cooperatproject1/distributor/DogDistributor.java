@@ -1,11 +1,10 @@
 package ru.jd6team7.cooperatproject1.distributor;
 
 import org.springframework.stereotype.Component;
-import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
 import ru.jd6team7.cooperatproject1.sender.DailyReportSender;
+import ru.jd6team7.cooperatproject1.sender.VolunteerSender;
 import ru.jd6team7.cooperatproject1.sender.dogSender.BaseDogSender;
 import ru.jd6team7.cooperatproject1.sender.dogSender.InfoDogShelterSender;
-import ru.jd6team7.cooperatproject1.sender.VolunteerSender;
 import ru.jd6team7.cooperatproject1.service.VisitorService;
 
 /**Распределялка по собачим сендерам. Сообщения с базовым статусом обработаны отдельно
@@ -13,40 +12,43 @@ import ru.jd6team7.cooperatproject1.service.VisitorService;
  */
 @Component
 public class DogDistributor extends Distributor{
-    private final BaseDogSender baseDogSender;
-    private final InfoDogShelterSender infoDogShelterSender;
-    private final VolunteerSender volunteerSender;
-    private final VisitorService visitorService;
-    private final DailyReportSender dailyReportSender;
 
-    public DogDistributor(BaseDogSender baseDogSender,
-                          InfoDogShelterSender infoDogShelterSender,
-                          VolunteerSender volunteerSender,
-                          VisitorService visitorService,
-                          DailyReportSender dailyReportSender) {
-        this.baseDogSender = baseDogSender;
-        this.infoDogShelterSender = infoDogShelterSender;
-        this.volunteerSender = volunteerSender;
-        this.visitorService = visitorService;
-        this.dailyReportSender = dailyReportSender;
-    }
+  private final BaseDogSender baseDogSender;
+  private final InfoDogShelterSender infoDogShelterSender;
 
-    @Override
-    public void getDistribute(long chatId, String message) {
-        Visitor.MessageStatus status = visitorService.findVisitor(chatId).getMessageStatus();
-        switch (message) {
-            case "/info" -> infoDogShelterSender.sendIntro(chatId);
-            case "/help" -> volunteerSender.sendIntro(chatId);
-            case "/sendReport" -> dailyReportSender.sendIntro(chatId);
-            case "/back", "/dog" -> baseDogSender.sendIntro(chatId);
-            default -> {
-                switch (status) {
-                    case BASE -> baseDogSender.process(chatId, message);
-                    case SHELTER_INFO -> infoDogShelterSender.process(chatId, message);
-                    case GET_CALLBACK -> volunteerSender.process(chatId, message);
+  public DogDistributor(BaseDogSender baseDogSender,
+      InfoDogShelterSender infoDogShelterSender,
+      VolunteerSender volunteerSender,
+      VisitorService visitorService,
+      DailyReportSender dailyReportSender) {
+    super(volunteerSender, visitorService, dailyReportSender);
+    this.baseDogSender = baseDogSender;
+    this.infoDogShelterSender = infoDogShelterSender;
+  }
 
-                }
-            }
-        }
-    }
+  @Override
+  protected void sendInfoIntro(long chatId) {
+    infoDogShelterSender.sendIntro(chatId);
+  }
+
+  @Override
+  protected void sendIntro(long chatId) {
+    baseDogSender.sendIntro(chatId);
+  }
+
+  @Override
+  protected void process(long chatId, String message) {
+    baseDogSender.process(chatId, message);
+  }
+
+  @Override
+  protected void processShelter(long chatId, String message) {
+    infoDogShelterSender.process(chatId, message);
+  }
+
+  @Override
+  public String command() {
+    return "/dog";
+  }
+
 }
