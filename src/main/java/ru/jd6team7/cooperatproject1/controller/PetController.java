@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.jd6team7.cooperatproject1.exceptions.PetNotFoundException;
-import ru.jd6team7.cooperatproject1.model.Pet;
+import ru.jd6team7.cooperatproject1.model.Dog;
 import ru.jd6team7.cooperatproject1.model.PetState;
 import ru.jd6team7.cooperatproject1.service.PetService;
 
@@ -40,17 +40,17 @@ public class PetController {
                             description = "Данные получены!",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Pet.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = Dog.class))
                             )
                     ),
                     @ApiResponse(
                             responseCode = "404",
                             description = "Питомца с ИД номером не найдено"
-                    )}, tags = "Pet"
+                    )}, tags = "Dog"
     )
     @GetMapping("{petID}")
-    public ResponseEntity<Pet> getPet(@Parameter(description = "ИД номер Питомца") @PathVariable Long petID) {
-        Pet resultEntity = petService.findPet(petID);
+    public ResponseEntity<Dog> getPet(@Parameter(description = "ИД номер Питомца") @PathVariable Long petID) {
+        Dog resultEntity = petService.findPet(petID);
         if (resultEntity != null) {
             return ResponseEntity.ok(resultEntity);
         } else {
@@ -66,7 +66,7 @@ public class PetController {
                             description = "фото выведено",
                             content = @Content(
                                     mediaType = MediaType.IMAGE_JPEG_VALUE,
-                                    schema = @Schema(implementation = Pet.class)
+                                    schema = @Schema(implementation = Dog.class)
                             )
                     ),
                     @ApiResponse(
@@ -83,11 +83,11 @@ public class PetController {
                                     mediaType = MediaType.TEXT_HTML_VALUE
                             )
                     )
-            }, tags = "Pet"
+            }, tags = "Dog"
     )
     @GetMapping("/{petID}/photoFromFileStore")
     public ResponseEntity<String> getPictureOfPetFromFileStore(@Parameter(description = "ИД номер Питомца") @PathVariable Long petID, HttpServletResponse response) throws IOException {
-        Pet resultEntity = petService.findPet(petID);
+        Dog resultEntity = petService.findPet(petID);
         if (resultEntity == null) {
             throw new PetNotFoundException("Питомец не найден");
         } else if (resultEntity.getPathFileToPhoto() == null){
@@ -110,7 +110,7 @@ public class PetController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Pet.class)
+                            schema = @Schema(implementation = Dog.class)
                     )
             ),
             responses = {
@@ -119,23 +119,23 @@ public class PetController {
                             description = "Данные записаны!",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Pet.class)
+                                    schema = @Schema(implementation = Dog.class)
                             )
                     )},
-            tags = "Pet"
+            tags = "Dog"
     )
     @PostMapping
-    public ResponseEntity<Pet> createPet(@RequestBody Pet inpPet) {
-        Pet resultEntity = petService.addPet(inpPet);
+    public ResponseEntity<Dog> createPet(@RequestBody Dog inpDog) {
+        Dog resultEntity = petService.addPet(inpDog);
         return ResponseEntity.ok(resultEntity);
     }
 
     @Operation(
-            summary = "Добавление Фото Питомца на диск + путь к данному файлу в БД в таблицу сущности Pet",
+            summary = "Добавление Фото Питомца на диск + путь к данному файлу в БД в таблицу сущности Dog",
             /*requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
                             mediaType = MediaType.IMAGE_JPEG_VALUE,
-                            schema = @Schema(implementation = Pet.class),
+                            schema = @Schema(implementation = Dog.class),
                             extensions = {@Extension(name = "*.jpeg", properties = {}),
                                     @Extension(name = "*.jpg", properties = {})
                             }
@@ -147,7 +147,7 @@ public class PetController {
                             description = "Фото сохранено!",
                             content = @Content(
                                     mediaType = MediaType.TEXT_HTML_VALUE,
-                                    schema = @Schema(implementation = Pet.class)
+                                    schema = @Schema(implementation = Dog.class)
                             )
                     ),
                     @ApiResponse(
@@ -158,7 +158,7 @@ public class PetController {
                             )
                     )
             },
-            tags = "Pet"
+            tags = "Dog"
     )
     @PostMapping(path = "{petID}/setPhoto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadPetPicture(@Parameter(description = "ИД номер Питомца") @PathVariable Long petID,
@@ -177,7 +177,7 @@ public class PetController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Pet.class)
+                            schema = @Schema(implementation = Dog.class)
                     )
             ),
             responses = {
@@ -186,14 +186,14 @@ public class PetController {
                             description = "Данные записаны!",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Pet.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = Dog.class))
                             )
                     )},
-            tags = "Pet"
+            tags = "Dog"
     )
     @PutMapping
-    public ResponseEntity<Pet> updatePet(@RequestBody Pet inpPet) {
-        Pet resultEntity = petService.updatePet(inpPet);
+    public ResponseEntity<Dog> updatePet(@RequestBody Dog inpDog) {
+        Dog resultEntity = petService.updatePet(inpDog);
         if (resultEntity != null) {
             return ResponseEntity.ok(resultEntity);
         } else {
@@ -209,9 +209,9 @@ public class PetController {
                             description = "Данные удалены!",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Pet.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = Dog.class))
                             )
-                    )}, tags = "Pet"
+                    )}, tags = "Dog"
     )
     @DeleteMapping
     public ResponseEntity<Boolean> deletePet(@Parameter(description = "ИД номер Питомца") @RequestParam long petID) {
@@ -224,10 +224,10 @@ public class PetController {
 
     @Operation(
             summary = "Обновление статуса Питомца",
-/*            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            /*requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Pet.class)
+                            schema = @Schema(implementation = Dog.class)
                     )
             ),*/
             responses = {
@@ -236,21 +236,21 @@ public class PetController {
                             description = "Данные записаны!",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Pet.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = Dog.class))
                             )
                     ),
                     @ApiResponse(
                             responseCode = "404",
                             description = "Питомца с ИД номером не найдено"
                     )},
-            tags = "Pet"
+            tags = "Dog"
     )
     @PutMapping("/setPetState")
-    public ResponseEntity<Pet> updatePetState(@Parameter(description = "ИД номер Питомца") @RequestParam Long petID,
+    public ResponseEntity<Dog> updatePetState(@Parameter(description = "ИД номер Питомца") @RequestParam Long petID,
                                               @Parameter(description = "статус Питомца") @RequestParam PetState inpState) {
-        Pet resultEntity = petService.findPet(petID);
+        Dog resultEntity = petService.findPet(petID);
         if (resultEntity != null) {
-            petService.putPetState(petID, inpState);
+            petService.putDogState(petID, inpState);
             return ResponseEntity.ok(resultEntity);
         } else {
             return ResponseEntity.notFound().build();
@@ -264,7 +264,7 @@ public class PetController {
                             description = "Данные получены!",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Pet.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = Dog.class))
                             )
                     ),
                     @ApiResponse(
@@ -272,13 +272,13 @@ public class PetController {
                             description = "Список пуст",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Pet.class)
+                                    schema = @Schema(implementation = Dog.class)
                             )
-                    )}, tags = "Pet"
+                    )}, tags = "Dog"
     )
     @GetMapping("/showAllKidsPet")
-    public ResponseEntity<List<Pet>> getAllKidsPet() {
-        List<Pet> resultEntity = petService.getAllKidsPets(2);
+    public ResponseEntity<List<Dog>> getAllKidsPet() {
+        List<Dog> resultEntity = petService.getAllKidsPets(2);
         if (resultEntity.size() > 0) {
             return ResponseEntity.ok(resultEntity);
         } else {
@@ -294,7 +294,7 @@ public class PetController {
                             description = "Данные получены!",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Pet.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = Dog.class))
                             )
                     ),
                     @ApiResponse(
@@ -302,13 +302,13 @@ public class PetController {
                             description = "Список пуст",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Pet.class)
+                                    schema = @Schema(implementation = Dog.class)
                             )
-                    )}, tags = "Pet"
+                    )}, tags = "Dog"
     )
     @GetMapping("/showAllAdultPets")
-    public ResponseEntity<List<Pet>> getAllAdultPets() {
-        List<Pet> resultEntity = petService.getAllAdultPets(1);
+    public ResponseEntity<List<Dog>> getAllAdultPets() {
+        List<Dog> resultEntity = petService.getAllAdultPets(1);
         if (resultEntity.size() > 0) {
             return ResponseEntity.ok(resultEntity);
         } else {
@@ -324,7 +324,7 @@ public class PetController {
                             description = "Данные получены!",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Pet.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = Dog.class))
                             )
                     ),
                     @ApiResponse(
@@ -332,13 +332,13 @@ public class PetController {
                             description = "Список пуст",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Pet.class)
+                                    schema = @Schema(implementation = Dog.class)
                             )
-                    )}, tags = "Pet"
+                    )}, tags = "Dog"
     )
     @GetMapping("/showAdultPetsForVisitor")
-    public ResponseEntity<List<Pet>> getAdultPetsForVisitor() {
-        List<Pet> resultEntity = petService.getAdultPetsForVisitor();
+    public ResponseEntity<List<Dog>> getAdultPetsForVisitor() {
+        List<Dog> resultEntity = petService.getAdultPetsForVisitor();
         if (resultEntity.size() > 0) {
             return ResponseEntity.ok(resultEntity);
         } else {
@@ -354,7 +354,7 @@ public class PetController {
                             description = "Данные получены!",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Pet.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = Dog.class))
                             )
                     ),
                     @ApiResponse(
@@ -362,13 +362,13 @@ public class PetController {
                             description = "Список пуст",
                             content = @Content(
                                 mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                schema = @Schema(implementation = Pet.class)
+                                schema = @Schema(implementation = Dog.class)
                             )
-                    )}, tags = "Pet"
+                    )}, tags = "Dog"
     )
     @GetMapping("/showKidsPetsForVisitor")
-    public ResponseEntity<List<Pet>> getKidsPetsForVisitor() {
-        List<Pet> resultEntity = petService.getKidsPetsForVisitor();
+    public ResponseEntity<List<Dog>> getKidsPetsForVisitor() {
+        List<Dog> resultEntity = petService.getKidsPetsForVisitor();
         if (resultEntity.size() > 0) {
             return ResponseEntity.ok(resultEntity);
         } else {
@@ -384,7 +384,7 @@ public class PetController {
                             description = "Данные получены!",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Pet.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = Dog.class))
                             )
                     ),
                     @ApiResponse(
@@ -392,13 +392,13 @@ public class PetController {
                             description = "Список пуст",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Pet.class)
+                                    schema = @Schema(implementation = Dog.class)
                             )
-                    )}, tags = "Pet"
+                    )}, tags = "Dog"
     )
     @GetMapping("/showAllPetsWithState")
-    public ResponseEntity<List<Pet>> showAllPetsWithState(@Parameter(description = "Статус Питомца") @RequestParam PetState inpState) {
-        List<Pet> resultEntity = petService.getAllPetsWithState(inpState.getCode());
+    public ResponseEntity<List<Dog>> showAllPetsWithState(@Parameter(description = "Статус Питомца") @RequestParam PetState inpState) {
+        List<Dog> resultEntity = petService.getAllPetsWithState(inpState.name());
         if (resultEntity.size() > 0) {
             return ResponseEntity.ok(resultEntity);
         } else {

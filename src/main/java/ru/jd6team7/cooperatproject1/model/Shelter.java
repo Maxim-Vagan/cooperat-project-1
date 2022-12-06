@@ -17,7 +17,7 @@ import java.util.Objects;
 public class Shelter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Integer id;
     String name;
     @Column(name = "name_of_director")
     String directorFIO;

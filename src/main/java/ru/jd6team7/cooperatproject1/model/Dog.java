@@ -13,14 +13,14 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-public class Pet {
+public class Dog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    @Column(name = "pet_id")
+    Long petID;
     @Column(name = "pet_name")
     String petName;
-    @Column(name = "animal_kind")
-    String animalKind;
     @Column(name = "animal_gender")
     String animalGender;
     Integer age;
@@ -28,32 +28,32 @@ public class Pet {
     String currentState;
     @Column(name = "path_file_to_photo")
     String pathFileToPhoto;
-
-
+    @Column(name = "shelter_id")
+    Integer shelterID;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Pet)) return false;
-        Pet pet = (Pet) o;
-        return Objects.equals(getPetName(), pet.getPetName()) && Objects.equals(getAnimalKind(), pet.getAnimalKind()) && Objects.equals(getAnimalGender(), pet.getAnimalGender()) && Objects.equals(getAge(), pet.getAge()) && Objects.equals(getCurrentState(), pet.getCurrentState());
+        if (!(o instanceof Dog)) return false;
+        Dog dog = (Dog) o;
+        return Objects.equals(getShelterID(), dog.getShelterID()) && Objects.equals(getPetID(), dog.getPetID()) && Objects.equals(getPetName(), dog.getPetName()) && Objects.equals(getAnimalGender(), dog.getAnimalGender()) && Objects.equals(getAge(), dog.getAge()) && Objects.equals(getCurrentState(), dog.getCurrentState());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPetName(), getAnimalKind(), getAnimalGender(), getAge(), getCurrentState());
+        return Objects.hash(getShelterID(), getPetID(), getPetName(), getAnimalGender(), getAge(), getCurrentState());
     }
 
     @Override
     public String toString() {
-        return "Pet{" +
-                "id=" + id +
+        return "Dog{" +
+                "petID=" + petID +
                 ", petName='" + petName + '\'' +
-                ", animalKind='" + animalKind + '\'' +
                 ", animalGender='" + animalGender + '\'' +
                 ", age=" + age +
                 ", currentState='" + currentState + '\'' +
                 ", pathFileToPhoto='" + pathFileToPhoto + '\'' +
+                ", shelterID=" + shelterID +
                 '}';
     }
 }

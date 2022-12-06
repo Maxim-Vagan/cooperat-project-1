@@ -4,4 +4,4 @@
 *.log
 /logs/
 /src/main/resources/static/pets_photos/
-*.properties
+/src/main/resources/application.properties

@@ -13,15 +13,17 @@ import java.util.Objects;
 @Setter
 public class Visitor {
 
-    public enum MessageStatus {BASE, SHELTER_INFO, PET_INFO, GET_CALLBACK}
 
-    public enum ShelterStatus {DOG, CAT}
+
+    public enum MessageStatus {BASE, SHELTER_INFO, PET_INFO, GET_CALLBACK, SEND_DAILY_REPORT;}
+
+    public enum ShelterStatus {DOG, CAT;}
     @Id
     @GeneratedValue
     private Long id;
     @NonNull
     @Column(name = "chat_id")
-    private long chatId;
+    private Long chatId;
     @Column(name = "phone_number")
     private String phoneNumber;
     @Column(name = "need_callback")

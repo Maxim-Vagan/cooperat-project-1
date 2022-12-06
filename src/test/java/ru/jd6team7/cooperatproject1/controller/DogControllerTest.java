@@ -11,14 +11,14 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import ru.jd6team7.cooperatproject1.model.Pet;
+import ru.jd6team7.cooperatproject1.model.Dog;
 import ru.jd6team7.cooperatproject1.model.PetState;
 
 import java.io.FileInputStream;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class PetControllerTest {
+class DogControllerTest {
 
     @LocalServerPort
     public int locPort;
@@ -32,16 +32,15 @@ class PetControllerTest {
     @Autowired
     private PetController petTestController;
 
-    private final Pet dummyTestExistedPet = new Pet();
+    private final Dog dummyTestExistedDog = new Dog();
 
     @BeforeEach
     void setUp() {
-        dummyTestExistedPet.setId(1L);
-        dummyTestExistedPet.setPetName("Бетти");
-        dummyTestExistedPet.setAnimalKind("собака");
-        dummyTestExistedPet.setAnimalGender("девочка");
-        dummyTestExistedPet.setAge(2);
-        dummyTestExistedPet.setCurrentState(PetState.AT_SHELTER.getCode());
+        dummyTestExistedDog.setPetID(5L);
+        dummyTestExistedDog.setPetName("Лайла");
+        dummyTestExistedDog.setAnimalGender("девочка");
+        dummyTestExistedDog.setAge(8);
+        dummyTestExistedDog.setCurrentState(PetState.AT_SHELTER.getCode());
     }
 
     /**
@@ -59,8 +58,8 @@ class PetControllerTest {
      */
     @Test
     void getPetTestSuccess() throws Exception{
-        Assertions.assertEquals(dummyTestExistedPet,
-                testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/1", Pet.class)
+        Assertions.assertEquals(dummyTestExistedDog,
+                testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/1", Dog.class)
         );
     }
 
@@ -71,7 +70,7 @@ class PetControllerTest {
     @Test
     void getPetTestFail() throws Exception{
         Assertions.assertEquals(HttpStatus.NOT_FOUND,
-            testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/10", Pet.class).getStatusCode()
+            testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/10", Dog.class).getStatusCode()
         );
     }
 
@@ -93,7 +92,7 @@ class PetControllerTest {
     @Test
     void getPictureOfPetFromFileStoreTestInternalServerError() throws Exception {
         Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,
-                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/10/photoFromFileStore", String.class).getStatusCode()
+                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/99/photoFromFileStore", String.class).getStatusCode()
         );
     }
 
@@ -104,7 +103,7 @@ class PetControllerTest {
     @Test
     void getPictureOfPetFromFileStoreTestNotFound() throws Exception {
         Assertions.assertEquals(HttpStatus.NOT_FOUND,
-                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/4/photoFromFileStore", String.class).getStatusCode()
+                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/10/photoFromFileStore", String.class).getStatusCode()
         );
     }
 
@@ -114,11 +113,13 @@ class PetControllerTest {
      */
     @Test
     void createPetTestSuccess() throws Exception{
-        dummyTestExistedPet.setId(0L);
-        dummyTestExistedPet.setPetName("Лайла");
-        Pet actualPet = testRestTemp.postForObject("http://localhost:" + locPort + "/shelter/pet",
-                dummyTestExistedPet, Pet.class);
-        Assertions.assertEquals(dummyTestExistedPet, actualPet);
+        dummyTestExistedDog.setPetID(100L);
+        dummyTestExistedDog.setPetName("Джек");
+        dummyTestExistedDog.setAnimalGender("мальчик");
+        dummyTestExistedDog.setAge(3);
+        Dog actualDog = testRestTemp.postForObject("http://localhost:" + locPort + "/shelter/pet",
+                dummyTestExistedDog, Dog.class);
+        Assertions.assertEquals(dummyTestExistedDog, actualDog);
     }
 
     /**
@@ -130,7 +131,7 @@ class PetControllerTest {
         FileInputStream dummyInpStream = new FileInputStream(photoDir + "/test_photo.jpg");
         MultipartFile uploadFile = new MockMultipartFile("test_photo", dummyInpStream);
         Assertions.assertEquals(HttpStatus.OK,
-                testRestTemp.postForEntity("http://localhost:" + locPort + "/shelter/pet/4/setPhoto",
+                testRestTemp.postForEntity("http://localhost:" + locPort + "/shelter/pet/100/setPhoto",
                         uploadFile,
                         String.class).getStatusCode()
         );
@@ -142,12 +143,12 @@ class PetControllerTest {
      */
     @Test
     void updatePetTest() throws Exception {
-        dummyTestExistedPet.setAge(5);
+        dummyTestExistedDog.setAge(5);
         testRestTemp.put("http://localhost:" + locPort + "/shelter/pet",
-                dummyTestExistedPet);
-        Assertions.assertEquals(dummyTestExistedPet,
-                testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/" + dummyTestExistedPet.getId(),
-                        Pet.class)
+                dummyTestExistedDog);
+        Assertions.assertEquals(dummyTestExistedDog,
+                testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/" + dummyTestExistedDog.getPetID(),
+                        Dog.class)
         );
     }
 
@@ -157,9 +158,9 @@ class PetControllerTest {
      */
     @Test
     void deletePetTest() throws Exception {
-        testRestTemp.delete("http://localhost:" + locPort + "/shelter/pet?petID=" + dummyTestExistedPet.getId());
-        Assertions.assertNull(testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/" + dummyTestExistedPet.getId(),
-                Pet.class)
+        testRestTemp.delete("http://localhost:" + locPort + "/shelter/pet?petID=" + dummyTestExistedDog.getPetID());
+        Assertions.assertNull(testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/" + dummyTestExistedDog.getPetID(),
+                Dog.class)
         );
     }
 
@@ -170,13 +171,13 @@ class PetControllerTest {
      */
     @Test
     void updatePetStateTest() throws Exception {
-        dummyTestExistedPet.setCurrentState(PetState.WITH_VISITOR.getCode());
+        dummyTestExistedDog.setCurrentState(PetState.WITH_VISITOR.getCode());
         testRestTemp.put("http://localhost:" + locPort + "/shelter/pet/setPetState?petID="+
-                        dummyTestExistedPet.getId() + "&inpState=" + PetState.WITH_VISITOR
-                , Pet.class);
+                        dummyTestExistedDog.getPetID() + "&inpState=" + PetState.WITH_VISITOR
+                , Dog.class);
         Assertions.assertEquals(PetState.WITH_VISITOR.getCode(),
-                testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/" + dummyTestExistedPet.getId(),
-                        Pet.class).getCurrentState()
+                testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/" + dummyTestExistedDog.getPetID(),
+                        Dog.class).getCurrentState()
         );
     }
 
