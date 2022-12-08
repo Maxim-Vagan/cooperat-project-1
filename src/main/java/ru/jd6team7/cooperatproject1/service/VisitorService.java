@@ -8,7 +8,7 @@ import ru.jd6team7.cooperatproject1.repository.VisitorRepository;
 @Service
 public class VisitorService {
 
-    VisitorRepository visitorRepository;
+    private final VisitorRepository visitorRepository;
 
     public VisitorService(VisitorRepository visitorRepository) {
         this.visitorRepository = visitorRepository;

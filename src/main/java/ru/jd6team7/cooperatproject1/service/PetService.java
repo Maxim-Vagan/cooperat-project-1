@@ -65,6 +65,8 @@ public class PetService {
         return petRepo.save(inpDog);
     }
 
+
+
     /**
      * Метод чтения записи о Питомце из БД. Поиск по идентификатору Питомца
      * @param inpId
@@ -102,7 +104,7 @@ public class PetService {
      */
     public Boolean deletePet(long inpId) {
         logger.debug("Удаление данных о Питомце с ID = " + inpId);
-        petRepo.deleteById(inpId);
+        petRepo.delete(findPet(inpId));
         if (findPet(inpId)==null){
             return true;
         } else {
@@ -210,7 +212,7 @@ public class PetService {
      * @return Возвращает изменённый экземпляр Питомца
      */
     public Cat putCatState(long petID, PetState inpPetState) {
-        Cat curCat = petRepo2.getPetByPetID(petID).orElse(null);
+        Cat curCat = petRepo2.getCatByPetID(petID).orElse(null);
         if (curCat == null) {
             throw new PetNotFoundException("К сожалению Питомца с идентификатором (id = " + petID + ") Нет!");
         }
@@ -218,5 +220,141 @@ public class PetService {
         curCat.setCurrentState(inpPetState.name());
         return petRepo2.save(curCat);
     }
+	
+	    /**
+     * Метод добавления записи о Питомце в БД
+     * @param inpCat
+     * @return Возвращает созданный экземпляр Питомца
+     */
+    public Cat addCat(Cat inpCat) {
+        logger.debug("Вызван метод addCat с inpCat = " + inpCat.getPetName());
+        return petRepo2.save(inpCat);
+    }
 
+
+
+    /**
+     * Метод чтения записи о Питомце из БД. Поиск по идентификатору Питомца
+     * @param inpId
+     * @return Возвращает найденный экземпляр Питомца, либо Пустоту
+     */
+    public Cat findCat(long inpId) {
+        logger.debug("Вызван метод findCat с inpId = " + inpId);
+        return petRepo2.getCatByPetID(inpId).orElse(null);
+    }
+
+    /**
+     * Метод перезаписи данных о Питомце
+     * @param inpUpdatedCat
+     * @return Возвращает перезаписанную информацию о Питомце
+     */
+    public Cat updateCat(Cat inpUpdatedCat) {
+        Cat updatedCat = petRepo2.getCatByPetID(inpUpdatedCat.getPetID()).orElse(null);
+        if (updatedCat != null){
+            updatedCat.setPetName(inpUpdatedCat.getPetName());
+            updatedCat.setAge(inpUpdatedCat.getAge());
+            updatedCat.setAnimalGender(inpUpdatedCat.getAnimalGender());
+            updatedCat.setCurrentState(inpUpdatedCat.getCurrentState());
+            updatedCat.setPathFileToPhoto(inpUpdatedCat.getPathFileToPhoto());
+            logger.debug("Вызван метод updateCat с inpUpdatedCat.getCatid = " + inpUpdatedCat.getPetID());
+            return petRepo2.save(updatedCat);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Метод удаления данных о Питомце. Поиск по идентификатору
+     * @param inpId
+     * @return
+     */
+    public Boolean deleteCat(long inpId) {
+        logger.debug("Удаление данных о Питомце с ID = " + inpId);
+        petRepo2.delete(findCat(inpId));
+        if (findCat(inpId)==null){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Метод возвращает список питомцев-малышей, которые могут быть доступны Посетителю для общения
+     * @return Список объектов класса Питомец, может быть возвращена Пустота
+     */
+    public List<Cat> getKidsCatsForVisitor() {
+        logger.debug("Вызван метод getKidsCatsForVisitor");
+        return petRepo2.getKidsPetsForVisitor();
+    }
+
+    /**
+     * Метод возвращает список взрослых питомцев, которые могут быть доступны Посетителю для общения
+     * @return Список объектов класса Питомец, может быть возвращена Пустота
+     */
+    public List<Cat> getAdultCatsForVisitor() {
+        logger.debug("Вызван метод getAdultCatsForVisitor");
+        return petRepo2.getAdultPetsForVisitor();
+    }
+
+    /**
+     * Метод возвращает весь список питомцев-малышей. Питомцы младше возраста
+     * @param inpAge
+     * @return Список объектов класса Питомец, может быть возвращена Пустота
+     */
+    public List<Cat> getAllKidsCats(Integer inpAge) {
+        logger.debug("Вызван метод getAllKidsCats с параметром inpAge = " + inpAge);
+        return petRepo2.getAllByAgeBefore(inpAge);
+    }
+
+    /**
+     * Метод возвращает весь список взрослых питомцев. Питомцы старше возраста
+     * @param inpAge
+     * @return Список объектов класса Питомец, может быть возвращена Пустота
+     */
+    public List<Cat> getAllAdultCats(Integer inpAge) {
+        logger.debug("Вызван метод getAllAdultCats с параметром inpAge = " + inpAge);
+        return petRepo2.getAllByAgeAfter(inpAge);
+    }
+
+    /**
+     * Метод возвращает всех Питомцев, имеющих выбранный статус (в приюте, у посетителя, у усыновителя, отсутствует, усыновлён)
+     * @param inpState
+     * @return  Список объектов класса Питомец, может быть возвращена Пустота
+     */
+    public List<Cat> getAllCatsWithState(String inpState) {
+        logger.debug("Вызван метод getAllCatsWithState с параметром inpState = " + inpState);
+        return petRepo2.getAllByCurrentStateLike(inpState);
+    }
+
+    /**
+     * Метод добавляет картинку Питомца во внутренную папку для фото.
+     * Прописывает путь к файлу в качестве Поля сущности Питомец
+     * для вывода при запросе
+     * @param petID
+     * @param inpPicture
+     * @throws IOException
+     * @return
+     */
+    public void addCatPhoto(Long petID, MultipartFile inpPicture) throws IOException {
+        Cat curCat = petRepo2.getCatByPetID(petID).orElse(null);
+        if (curCat == null) {
+            throw new PetNotFoundException("К сожалению Питомца с идентификатором (id = " + petID + ") Нет!");
+        }
+        logger.debug("Вызван метод addCatPhoto");
+        Path imagePath = Path.of(picturePath + '/' + curCat.getPetName() + curCat.getPetID() + getExtensionOfFile(inpPicture.getOriginalFilename()));
+        Files.createDirectories(imagePath.getParent());
+        Files.deleteIfExists(imagePath);
+        // Создание потоков и вызов метода передачи данных по 1-му килобайту
+        logger.debug("Формирование стрима для вывод в файл");
+        try (InputStream inpStream = inpPicture.getInputStream();
+             OutputStream outStream = Files.newOutputStream(imagePath, CREATE_NEW);
+             BufferedInputStream bufInpStream = new BufferedInputStream(inpStream, 1024);
+             BufferedOutputStream bufOutStream = new BufferedOutputStream(outStream, 1024);
+        ) {
+            bufInpStream.transferTo(bufOutStream);
+        }
+        curCat.setPathFileToPhoto(imagePath.toFile().getPath());
+        logger.debug("Сохранение пути к Фото Питомца в репозиторий");
+        petRepo2.save(curCat);
+    }
 }

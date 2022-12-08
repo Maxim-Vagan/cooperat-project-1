@@ -16,12 +16,12 @@ import java.util.Objects;
 public class Volunteer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-    String name;
-    String surname;
-    String lastname;
+    private Integer id;
+    private String name;
+    private String surname;
+    private String lastname;
     @Column(name = "phone_number")
-    String phoneNumber;
+    private String phoneNumber;
 
     @Override
     public boolean equals(Object o) {

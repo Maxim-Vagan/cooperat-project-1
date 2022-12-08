@@ -18,16 +18,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import ru.jd6team7.cooperatproject1.exceptions.PetNotFoundException;
-import ru.jd6team7.cooperatproject1.model.Dog;
+import ru.jd6team7.cooperatproject1.model.Cat;
 import ru.jd6team7.cooperatproject1.model.PetState;
-import ru.jd6team7.cooperatproject1.repository.DogRepository;
+import ru.jd6team7.cooperatproject1.repository.CatRepository;
 import ru.jd6team7.cooperatproject1.service.PetService;
 
 import java.io.FileInputStream;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class DogControllerTest {
+class CatControllerTest {
 
     @LocalServerPort
     public int locPort;
@@ -43,24 +43,24 @@ class DogControllerTest {
 
     private final JSONObject dummyTestPostObj = new JSONObject();
 
-    private final Dog dummyTestExistedDog = new Dog();
-    private final Dog dummyTestCreateDeleteDog = new Dog();
+    private final Cat dummyTestExistedCat = new Cat();
+    private final Cat dummyTestCreateDeleteCat = new Cat();
 
     @BeforeEach
     void setUp() throws JSONException {
-        dummyTestPostObj.put("petID", 100L);
-        dummyTestPostObj.put("petName", "Джек");
+        dummyTestPostObj.put("petID", 95L);
+        dummyTestPostObj.put("petName", "Рыжий");
         dummyTestPostObj.put("animalGender", "мальчик");
-        dummyTestPostObj.put("age", 3);
+        dummyTestPostObj.put("age", 6);
         dummyTestPostObj.put("currentState", "AT_SHELTER");
-        dummyTestPostObj.put("shelterID", 1);
+        dummyTestPostObj.put("shelterID", 2);
 
-        dummyTestExistedDog.setPetID(4L);
-        dummyTestExistedDog.setPetName("Мухтар");
-        dummyTestExistedDog.setAnimalGender("мальчик");
-        dummyTestExistedDog.setAge(5);
-        dummyTestExistedDog.setCurrentState(PetState.WITH_VISITOR.name());
-        dummyTestExistedDog.setShelterID(1);
+        dummyTestExistedCat.setPetID(2L);
+        dummyTestExistedCat.setPetName("Барсик");
+        dummyTestExistedCat.setAnimalGender("мальчик");
+        dummyTestExistedCat.setAge(5);
+        dummyTestExistedCat.setCurrentState(PetState.WITH_VISITOR.name());
+        dummyTestExistedCat.setShelterID(2);
     }
 
 
@@ -79,8 +79,8 @@ class DogControllerTest {
      */
     @Test
     void getPetTestSuccess() throws Exception{
-        Assertions.assertEquals(dummyTestExistedDog,
-                testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/dog/4", Dog.class)
+        Assertions.assertEquals(dummyTestExistedCat,
+                testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/cat/2", Cat.class)
         );
     }
 
@@ -91,7 +91,7 @@ class DogControllerTest {
     @Test
     void getPetTestFail() throws Exception{
         Assertions.assertEquals(HttpStatus.NOT_FOUND,
-                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/dog/10", Dog.class).getStatusCode()
+                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/cat/10", Cat.class).getStatusCode()
         );
     }
 
@@ -102,7 +102,7 @@ class DogControllerTest {
     @Test
     void getPictureOfPetFromFileStoreTestSuccess() throws Exception {
         Assertions.assertEquals(HttpStatus.OK,
-                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/dog/2/photoFromFileStore", String.class).getStatusCode()
+                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/cat/2/photoFromFileStore", String.class).getStatusCode()
         );
     }
 
@@ -113,7 +113,7 @@ class DogControllerTest {
     @Test
     void getPictureOfPetFromFileStoreTestInternalServerError() throws Exception {
         Assertions.assertEquals(HttpStatus.NOT_FOUND,
-                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/dog/99/photoFromFileStore", String.class).getStatusCode()
+                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/cat/99/photoFromFileStore", String.class).getStatusCode()
         );
     }
 
@@ -124,7 +124,7 @@ class DogControllerTest {
     @Test
     void getPictureOfPetFromFileStoreTestNotFound() throws Exception {
         Assertions.assertEquals(HttpStatus.NOT_FOUND,
-                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/dog/10/photoFromFileStore", String.class).getStatusCode()
+                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/cat/10/photoFromFileStore", String.class).getStatusCode()
         );
     }
 
@@ -134,9 +134,9 @@ class DogControllerTest {
      */
     @Test
     void createPetTestSuccess() throws Exception{
-        /*when(dogRepo.save(any(Dog.class))).thenReturn(dummyTestExistedDog);
+        /*when(catRepo.save(any(Cat.class))).thenReturn(dummyTestExistedCat);
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/shelter/pet/dog") //send
+                        .post("/shelter/pet/cat") //send
                         .content(dummyTestPostObj.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -149,9 +149,9 @@ class DogControllerTest {
                 .andExpect(jsonPath("$.shelterID").value(1));*/
 
 
-        Dog actualDog = testRestTemp.postForObject("http://localhost:" + locPort + "/shelter/pet/dog",
-                dummyTestExistedDog, Dog.class);
-        Assertions.assertEquals(dummyTestExistedDog, actualDog);
+        Cat actualCat = testRestTemp.postForObject("http://localhost:" + locPort + "/shelter/pet/cat",
+                dummyTestExistedCat, Cat.class);
+        Assertions.assertEquals(dummyTestExistedCat, actualCat);
     }
 
     /**
@@ -163,7 +163,7 @@ class DogControllerTest {
         FileInputStream dummyInpStream = new FileInputStream(photoDir + "/test_photo.jpg");
         MultipartFile uploadFile = new MockMultipartFile("test_photo.jpg", dummyInpStream.readAllBytes());
         Assertions.assertEquals(HttpStatus.OK,
-                testRestTemp.postForEntity("http://localhost:" + locPort + "/shelter/pet/dog/4/setPhoto",
+                testRestTemp.postForEntity("http://localhost:" + locPort + "/shelter/pet/cat/2/setPhoto",
                         uploadFile,
                         String.class).getStatusCode()
         );
@@ -175,12 +175,12 @@ class DogControllerTest {
      */
     @Test
     void updatePetTest() throws Exception {
-        dummyTestExistedDog.setAge(5);
-        testRestTemp.put("http://localhost:" + locPort + "/shelter/pet/dog",
-                dummyTestExistedDog);
-        Assertions.assertEquals(dummyTestExistedDog,
-                testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/dog/" + dummyTestExistedDog.getPetID(),
-                        Dog.class)
+        dummyTestExistedCat.setAge(5);
+        testRestTemp.put("http://localhost:" + locPort + "/shelter/pet/cat",
+                dummyTestExistedCat);
+        Assertions.assertEquals(dummyTestExistedCat,
+                testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/cat/" + dummyTestExistedCat.getPetID(),
+                        Cat.class)
         );
     }
 
@@ -190,9 +190,9 @@ class DogControllerTest {
      */
     @Test
     void deletePetTest() throws Exception {
-        testRestTemp.delete("http://localhost:" + locPort + "/shelter/pet/dog?petID=4");
-        Assertions.assertNull(testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/dog/" + dummyTestExistedDog.getPetID(),
-                Dog.class)
+        testRestTemp.delete("http://localhost:" + locPort + "/shelter/pet/cat?petID=" + dummyTestExistedCat.getPetID());
+        Assertions.assertNull(testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/cat/" + dummyTestExistedCat.getPetID(),
+                Cat.class)
         );
     }
 
@@ -203,13 +203,13 @@ class DogControllerTest {
      */
     @Test
     void updatePetStateTest() throws Exception {
-        dummyTestExistedDog.setCurrentState(PetState.WITH_VISITOR.name());
-        testRestTemp.put("http://localhost:" + locPort + "/shelter/pet/dog/setPetState?petID="+
-                        dummyTestExistedDog.getPetID() + "&inpState=" + PetState.WITH_VISITOR
-                , Dog.class);
+        dummyTestExistedCat.setCurrentState(PetState.WITH_VISITOR.name());
+        testRestTemp.put("http://localhost:" + locPort + "/shelter/pet/cat/setPetState?petID="+
+                        dummyTestExistedCat.getPetID() + "&inpState=" + PetState.WITH_VISITOR.name()
+                , Cat.class);
         Assertions.assertEquals(PetState.WITH_VISITOR.name(),
-                testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/dog/" + dummyTestExistedDog.getPetID(),
-                        Dog.class).getCurrentState()
+                testRestTemp.getForObject("http://localhost:" + locPort + "/shelter/pet/cat/" + dummyTestExistedCat.getPetID(),
+                        Cat.class).getCurrentState()
         );
     }
 
@@ -220,8 +220,8 @@ class DogControllerTest {
      */
     @Test
     void getAllKidsPetTest() throws Exception {
-        Assertions.assertEquals(HttpStatus.OK,
-                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/dog/showAllKidsPet",
+        Assertions.assertEquals(HttpStatus.NOT_FOUND,
+                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/cat/showAllKidsPet",
                         List.class).getStatusCode()
         );
     }
@@ -234,7 +234,7 @@ class DogControllerTest {
     @Test
     void getAllAdultPetsTest() throws Exception {
         Assertions.assertEquals(HttpStatus.OK,
-                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/dog/showAllAdultPets",
+                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/cat/showAllAdultPets",
                         List.class).getStatusCode()
         );
     }
@@ -247,7 +247,7 @@ class DogControllerTest {
     @Test
     void getAdultPetsForVisitorTest() throws Exception {
         Assertions.assertEquals(HttpStatus.OK,
-                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/dog/showAdultPetsForVisitor",
+                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/cat/showAdultPetsForVisitor",
                         List.class).getStatusCode()
         );
     }
@@ -259,8 +259,8 @@ class DogControllerTest {
      */
     @Test
     void getKidsPetsForVisitorTest() throws Exception {
-        Assertions.assertEquals(HttpStatus.OK,
-                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/dog/showKidsPetsForVisitor",
+        Assertions.assertEquals(HttpStatus.NOT_FOUND,
+                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/cat/showKidsPetsForVisitor",
                         List.class).getStatusCode()
         );
     }
@@ -273,7 +273,7 @@ class DogControllerTest {
     @Test
     void showAllPetsWithStateTestSuccess() throws Exception {
         Assertions.assertEquals(HttpStatus.OK,
-                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/dog/showAllPetsWithState?inpState=" + PetState.AT_SHELTER,
+                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/cat/showAllPetsWithState?inpState=" + PetState.AT_SHELTER.name(),
                         List.class).getStatusCode()
         );
     }
@@ -286,7 +286,7 @@ class DogControllerTest {
     @Test
     void showAllPetsWithStateTestNotFound() throws Exception {
         Assertions.assertEquals(HttpStatus.NOT_FOUND,
-                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/dog/showAllPetsWithState?inpState=" + PetState.ADOPTED,
+                testRestTemp.getForEntity("http://localhost:" + locPort + "/shelter/pet/cat/showAllPetsWithState?inpState=" + PetState.ADOPTED,
                         List.class).getStatusCode()
         );
     }

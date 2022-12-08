@@ -38,6 +38,7 @@ class DogServiceTest {
     @BeforeEach
     void setUp() {
         dummyTestDog.setId(10L);
+        dummyTestDog.setPetID(10L);
         dummyTestDog.setPetName("Бетти");
         dummyTestDog.setAnimalGender("девочка");
         dummyTestDog.setAge(7);

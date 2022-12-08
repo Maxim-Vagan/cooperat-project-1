@@ -16,20 +16,20 @@ import java.util.Objects;
 public class Cat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
     @Column(name = "pet_id")
-    Long petID;
+    private Long petID;
     @Column(name = "pet_name")
-    String petName;
+    private String petName;
     @Column(name = "animal_gender")
-    String animalGender;
-    Integer age;
+    private String animalGender;
+    private Integer age;
     @Column(name = "current_state")
-    String currentState;
+    private String currentState;
     @Column(name = "path_file_to_photo")
-    String pathFileToPhoto;
+    private String pathFileToPhoto;
     @Column(name = "shelter_id")
-    Integer shelterID;
+    private Integer shelterID;
 
 
     @Override
