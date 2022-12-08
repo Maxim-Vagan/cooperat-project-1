@@ -7,29 +7,32 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
-import ru.jd6team7.cooperatproject1.sender.dogSender.BaseDogSender;
-import ru.jd6team7.cooperatproject1.sender.dogSender.DogInfoPetSender;
-import ru.jd6team7.cooperatproject1.sender.dogSender.InfoDogShelterSender;
 import ru.jd6team7.cooperatproject1.sender.VolunteerSender;
+import ru.jd6team7.cooperatproject1.sender.catSender.BaseCatSender;
+import ru.jd6team7.cooperatproject1.sender.catSender.CatInfoPetSender;
+import ru.jd6team7.cooperatproject1.sender.catSender.InfoCatShelterSender;
 import ru.jd6team7.cooperatproject1.service.VisitorService;
 
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class DogDistributorTest {
+class CatDistributorTest {
+
     @Mock
-    private BaseDogSender baseDogSender;
+    private BaseCatSender baseCatSender;
     @Mock
-    private InfoDogShelterSender infoDogShelterSender;
+    private InfoCatShelterSender infoCatShelterSender;
     @Mock
-    private DogInfoPetSender dogInfoPetSender;
+    private CatInfoPetSender catInfoPetSender;
     @Mock
     private VolunteerSender volunteerSender;
     @Mock
     private VisitorService visitorService;
 
     @InjectMocks
-    private DogDistributor d;
+    private CatDistributor d;
 
     private Visitor visitor;
     @BeforeEach
@@ -44,31 +47,30 @@ class DogDistributorTest {
         String message = "/info";
         when(visitorService.findVisitor(chatId)).thenReturn(visitor);
         d.getDistribute(chatId, message);
-        verify(infoDogShelterSender).sendIntro(chatId);
+        verify(infoCatShelterSender).sendIntro(chatId);
         message = "/help";
         d.getDistribute(chatId, message);
         verify(volunteerSender).sendIntro(chatId);
         message = "/back";
         d.getDistribute(chatId, message);
-        verify(baseDogSender).sendIntro(chatId);
-        message = "/dog";
+        verify(baseCatSender).sendIntro(chatId);
+        message = "/cat";
         d.getDistribute(chatId, message);
         message = "/takePet";
         d.getDistribute(chatId, message);
-        verify(dogInfoPetSender).sendIntro(chatId);
+        verify(catInfoPetSender).sendIntro(chatId);
         message = "";
         d.getDistribute(chatId, message);
-        verify(baseDogSender).process(chatId, message);
+        verify(baseCatSender).process(chatId, message);
         visitor.setMessageStatus(Visitor.MessageStatus.SHELTER_INFO);
         d.getDistribute(chatId, message);
-        verify(infoDogShelterSender).process(chatId, message);
+        verify(infoCatShelterSender).process(chatId, message);
         visitor.setMessageStatus(Visitor.MessageStatus.PET_INFO);
         d.getDistribute(chatId, message);
-        verify(dogInfoPetSender).process(chatId, message);
+        verify(catInfoPetSender).process(chatId, message);
         visitor.setMessageStatus(Visitor.MessageStatus.GET_CALLBACK);
         d.getDistribute(chatId, message);
         verify(volunteerSender).process(chatId, message);
     }
-
 
 }

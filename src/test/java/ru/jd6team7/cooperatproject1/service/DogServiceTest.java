@@ -29,7 +29,7 @@ class DogServiceTest {
     private DogRepository testPetRepo;
 
     @InjectMocks
-    private PetService testService;
+    private DogService testService;
 
     private final String PHOTO_DIR = "src/main/resources/static/pets_photos";
 

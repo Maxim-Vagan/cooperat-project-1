@@ -14,11 +14,15 @@ public class VisitorService {
         this.visitorRepository = visitorRepository;
     }
 
+    //Используется только в листенере, когда пишет новый юзер. Сохраняет только chatID. Все остальное делать через перегруз
     public Visitor addVisitor(Long chatId) {
         Visitor visitor = new Visitor(chatId);
+        return addVisitor(visitor);
+    }
+
+    public Visitor addVisitor(Visitor visitor) {
         visitor.setMessageStatus(Visitor.MessageStatus.BASE);
-        visitorRepository.save(visitor);
-        return visitor;
+        return visitorRepository.save(visitor);
     }
 
     public Visitor findVisitor(long chatId) {
@@ -27,6 +31,10 @@ public class VisitorService {
 
     public Visitor updateVisitor(Visitor visitor) {
         return visitorRepository.save(visitor);
+    }
+
+    public void deleteVisitor(Visitor visitor) {
+        visitorRepository.delete(visitor);
     }
 
     public void updateMessageStatus(long chatId, Visitor.MessageStatus messageStatus) {

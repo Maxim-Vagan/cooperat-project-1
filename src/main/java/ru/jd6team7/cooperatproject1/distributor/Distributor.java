@@ -28,6 +28,7 @@ public abstract class Distributor {
       case "/info" -> sendInfoIntro(chatId);
       case "/help" -> volunteerSender.sendIntro(chatId);
       case "/sendReport" -> dailyReportSender.sendIntro(chatId);
+      case "/takePet" -> sendPetIntro(chatId);
       case "/back" -> sendIntro(chatId);
       default -> {
         if (command().equals(message)) {
@@ -37,6 +38,7 @@ public abstract class Distributor {
         switch (status) {
           case BASE -> process(chatId, message);
           case SHELTER_INFO -> processShelter(chatId, message);
+          case PET_INFO -> processPet(chatId, message);
           case GET_CALLBACK -> volunteerSender.process(chatId, message);
         }
       }
@@ -46,11 +48,14 @@ public abstract class Distributor {
   public abstract String command();
 
   protected abstract void sendInfoIntro(long chatId);
+  protected abstract void sendPetIntro(long chatId);
 
   protected abstract void sendIntro(long chatId);
 
   protected abstract void process(long chatId, String message);
 
   protected abstract void processShelter(long chatId, String message);
+
+  protected abstract void processPet(long chatId, String message);
 
 }

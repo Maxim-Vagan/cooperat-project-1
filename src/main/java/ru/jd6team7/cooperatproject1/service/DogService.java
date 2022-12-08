@@ -26,7 +26,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
  * вывод списков Питомцев по критериям запросов
  */
 @Service
-public class PetService {
+public class DogService {
     /** Поле хранит значение общей папке с файлами фото питомцев */
     @Value("${pets.photos.dir.path}")
     private String picturePath;
@@ -37,7 +37,7 @@ public class PetService {
     /** Объект Логера для вывода лог-сообщений в файл лог-журнала */
     private final Logger logger = LoggerFactory.getLogger("ru.telbot.file");
 
-    public PetService(DogRepository petRepo, CatRepository petRepo2) {
+    public DogService(DogRepository petRepo, CatRepository petRepo2) {
         this.petRepo = petRepo;
         this.petRepo2 = petRepo2;
     }

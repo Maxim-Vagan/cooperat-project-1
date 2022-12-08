@@ -60,7 +60,6 @@ public class BotUpdatesListener implements UpdatesListener {
      */
     @Override
     public int process(List<Update> updates) {
-//        return UpdatesListener.CONFIRMED_UPDATES_ALL;
         notifyer.startChecking();
         updates.forEach(update -> {
             Visitor visitor = visitorService.findVisitor(update.message().chat().id());
@@ -72,8 +71,7 @@ public class BotUpdatesListener implements UpdatesListener {
                     if (update.message().text() != null) {
                         String message = parseNotificationTask(update.message().text());
                         switch (message) {
-                            case "/start":
-                            case "/anotherShelter":
+                            case "/start", "/anotherShelter":
                                 telegramBot.execute(new SendMessage(update.message().chat().id(), START_MESSAGE));
                                 break;
                             case "/dog":
@@ -81,13 +79,17 @@ public class BotUpdatesListener implements UpdatesListener {
                                 dogDistributor.getDistribute(update.message().chat().id(), message);
                                 break;
                             case "/cat":
-                                break; //TODO: продублировать логику для котов
+                                visitorService.updateShelterStatus(update.message().chat().id(), Visitor.ShelterStatus.CAT);
+                                catDistributor.getDistribute(update.message().chat().id(), message);
+                                break;
                             default:
                                 switch (visitor.getShelterStatus()) {
                                     case DOG:
                                         dogDistributor.getDistribute(update.message().chat().id(), message);
+                                        break;
                                     case CAT:
                                         catDistributor.getDistribute(update.message().chat().id(), message);
+                                        break;
                                 }
                                 break;
                         }
