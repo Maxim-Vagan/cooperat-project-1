@@ -61,7 +61,7 @@ public class TryPeriodService {
         String petTableName = tryPeriodRepo.getTableName(inpTryP.getShelterID(), inpTryP.getPetID());
         switch (petTableName) {
             case "Dog" -> petService.putDogState(inpTryP.getPetID(), PetState.WITH_GUARDIAN);
-            case "Cat" -> petService.putCatState(inpTryP.getPetID(), PetState.WITH_GUARDIAN);
+/*            case "Cat" -> petService.putCatState(inpTryP.getPetID(), PetState.WITH_GUARDIAN);*/
             default -> logger.debug("WARN - Не удалось определить тип Питомца!");
         }
         return tryPeriodRepo.save(inpTryP);

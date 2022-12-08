@@ -24,11 +24,11 @@ import java.nio.file.Path;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/pet")
-public class PetController {
+@RequestMapping(path = "/dog")
+public class DogController {
     private final DogService petService;
 
-    public PetController(DogService petService) {
+    public DogController(DogService petService) {
         this.petService = petService;
     }
 

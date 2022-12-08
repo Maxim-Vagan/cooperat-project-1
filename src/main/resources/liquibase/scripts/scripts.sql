@@ -153,3 +153,7 @@ create table if not exists cat
 -- changeset maxvagan:8
 alter table dog add column shelter_id integer REFERENCES shelter(id);
 alter table cat add column shelter_id integer REFERENCES shelter(id);
+
+-- changeset mkachalov:6
+alter table visitor add email text;
+alter table visitor add phone_number text;
