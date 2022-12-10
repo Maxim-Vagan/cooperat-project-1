@@ -99,7 +99,7 @@ public class DogService {
      */
     public Boolean deletePet(long inpId) {
         logger.debug("Удаление данных о Питомце с ID = " + inpId);
-        petRepo.deleteById(inpId);
+        petRepo.delete(findPet(inpId));
         if (findPet(inpId)==null){
             return true;
         } else {

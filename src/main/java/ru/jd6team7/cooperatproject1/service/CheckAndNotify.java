@@ -6,12 +6,9 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.jd6team7.cooperatproject1.model.NotificationTask;
-import ru.jd6team7.cooperatproject1.model.visitor.DogVisitor;
-import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
 import ru.jd6team7.cooperatproject1.repository.NotificationTaskRepository;
 import ru.jd6team7.cooperatproject1.repository.TryPeriodRepository;
 
@@ -22,14 +19,13 @@ import java.util.List;
 
 @Service
 public class CheckAndNotify {
-
-    @Autowired
-    private NotificationTaskRepository notifTaskRepo;
-    @Autowired
-    private TryPeriodRepository tryPeriodRepo;
-
+    /** Объект репозитория для записи в БД данных по Уведомлениям */
+    private final NotificationTaskRepository notifTaskRepo;
+    /** Объект репозиторий для получения данных из БД по ИС */
+    private final TryPeriodRepository tryPeriodRepo;
+    /** Объект Телеграм бот-ассистента */
     private final TelegramBot telBot;
-
+    /** Значение ChatID для чата с Волонтёрами(ом) для уведомления о задолженности */
     private final Long dutyVolunteer = 1805591065L;
     /** Объект Логера для вывода лог-сообщений в файл лог-журнала */
     private final Logger loggerFile = LoggerFactory.getLogger("ru.telbot.file");
@@ -38,7 +34,11 @@ public class CheckAndNotify {
             "прислать *Ежедневный отчёт* по каждому из питомцев под вашей опекой! " +
             "Пока не завершён испытательный срок";
 
-    public CheckAndNotify(TelegramBot telBot) {
+    public CheckAndNotify(NotificationTaskRepository notifTaskRepo,
+                          TryPeriodRepository tryPeriodRepo,
+                          TelegramBot telBot) {
+        this.notifTaskRepo = notifTaskRepo;
+        this.tryPeriodRepo = tryPeriodRepo;
         this.telBot = telBot;
     }
 
@@ -57,8 +57,8 @@ public class CheckAndNotify {
         if (notificationList.size() > 0){
             loggerFile.debug("Scheduling Autosend Notifications on current time ({})", NowMinute);
             notificationList.forEach(notify -> {
-                SendMessage messageToChat = new SendMessage(notify.getTelegram_chat_id(),
-                        notify.getMessage_text()).parseMode(ParseMode.Markdown);
+                SendMessage messageToChat = new SendMessage(notify.getTelegramChatID(),
+                        notify.getMessageText()).parseMode(ParseMode.Markdown);
                 SendResponse responseFromBot = telBot.execute(messageToChat);
             });
         }

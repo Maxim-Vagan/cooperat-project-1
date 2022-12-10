@@ -3,10 +3,7 @@ package ru.jd6team7.cooperatproject1.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -23,32 +20,36 @@ public class NotificationTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long telegram_chat_id;
-    private String message_text;
-    private LocalDateTime message_datetime;
-    private LocalDateTime send_datetime;
+    @Column(name = "telegram_chat_id")
+    private long telegramChatID;
+    @Column(name = "message_text")
+    private String messageText;
+    @Column(name = "message_datetime")
+    private LocalDateTime messageDateTime;
+    @Column(name = "send_datetime")
+    private LocalDateTime sendDateTime;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof NotificationTask)) return false;
         NotificationTask that = (NotificationTask) o;
-        return getTelegram_chat_id() == that.getTelegram_chat_id() && Objects.equals(getMessage_text(), that.getMessage_text()) && Objects.equals(getMessage_datetime(), that.getMessage_datetime()) && Objects.equals(getSend_datetime(), that.getSend_datetime());
+        return this.getTelegramChatID() == that.getTelegramChatID() && Objects.equals(this.getMessageText(), that.getMessageText()) && Objects.equals(this.getMessageDateTime(), that.getMessageDateTime()) && Objects.equals(this.getSendDateTime(), that.getSendDateTime());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTelegram_chat_id(), getMessage_text(), getMessage_datetime(), getSend_datetime());
+        return Objects.hash(this.getTelegramChatID(), this.getMessageText(), this.getMessageDateTime(), this.getSendDateTime());
     }
 
     @Override
     public String toString() {
         return "NotificationTask{" +
                 "id=" + id +
-                ", telegram_chat_id=" + telegram_chat_id +
-                ", message_text='" + message_text + '\'' +
-                ", message_datetime=" + message_datetime +
-                ", send_datetime=" + send_datetime +
+                ", telegram_chat_id=" + telegramChatID +
+                ", message_text='" + messageText + '\'' +
+                ", message_datetime=" + messageDateTime +
+                ", send_datetime=" + sendDateTime +
                 '}';
     }
 }

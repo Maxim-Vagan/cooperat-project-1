@@ -1,5 +1,6 @@
 package ru.jd6team7.cooperatproject1.service;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -75,7 +76,7 @@ public class DailyReportService {
         }
     }
 
-    private DogVisitor convertToDogVisitor(Object[] inpObj) {
+    private DogVisitor convertToDogVisitor(@NotNull Object[] inpObj) {
         DogVisitor dogVis = new DogVisitor();
         dogVis.setId(Long.decode(inpObj[0].toString()));
         if (inpObj[1] != null) {
@@ -160,6 +161,7 @@ public class DailyReportService {
     public DailyReport updateDailyReport(DailyReport inpDailyReport) {
         logger.debug("Вызван метод updateDailyReport с inpDailyReport");
         DailyReport dailyReport = findDailyReport(inpDailyReport.getId());
+        if (dailyReport == null) { throw new DailyReportEmptyListException("Нет ежедневных отчётов"); }
         dailyReport.setPetID(inpDailyReport.getPetID());
         dailyReport.setShelterID(inpDailyReport.getShelterID());
         dailyReport.setCreateDate(inpDailyReport.getCreateDate());

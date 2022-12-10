@@ -17,12 +17,12 @@ import java.util.Objects;
 public class Shelter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-    String name;
+    private Integer id;
+    private String name;
     @Column(name = "name_of_director")
-    String directorFIO;
-    String address;
-    String schedule;
+    private String directorFIO;
+    private String address;
+    private String schedule;
 
 
 

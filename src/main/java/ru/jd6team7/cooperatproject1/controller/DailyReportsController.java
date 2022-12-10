@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.jd6team7.cooperatproject1.exceptions.DailyReportEmptyListException;
+import ru.jd6team7.cooperatproject1.exceptions.GuardsListIsEmptyException;
 import ru.jd6team7.cooperatproject1.model.DailyReport;
 import ru.jd6team7.cooperatproject1.model.Dog;
 import ru.jd6team7.cooperatproject1.model.visitor.DogVisitor;
@@ -137,9 +138,9 @@ public class DailyReportsController {
                     )}, tags = "DailyReports"
     )
     @PutMapping("/report")
-    public ResponseEntity<DailyReport> updateDailyReport(@RequestBody DailyReport inpDailyReport) {
-        DailyReport resultEntity = dailyReportService.updateDailyReport(inpDailyReport);
+    public ResponseEntity<DailyReport> updateDailyReport(@RequestBody DailyReport inpDailyReport){
         try {
+            DailyReport resultEntity = dailyReportService.updateDailyReport(inpDailyReport);
             if (resultEntity != null)
                 return ResponseEntity.ok(resultEntity);
             else {
@@ -218,10 +219,14 @@ public class DailyReportsController {
     )
     @GetMapping("/{inpShelterID}/guardians")
     public ResponseEntity<List<DogVisitor>> showGuardsList(@Parameter(description = "ИД номер Приюта") @PathVariable Integer inpShelterID) {
-        List<DogVisitor> resultEntity = dailyReportService.showGuardsList(inpShelterID);
-        if (resultEntity != null) {
-            return ResponseEntity.ok(resultEntity);
-        } else {
+        try {
+            List<DogVisitor> resultEntity = dailyReportService.showGuardsList(inpShelterID);
+            if (resultEntity != null) {
+                return ResponseEntity.ok(resultEntity);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (GuardsListIsEmptyException glie) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -244,7 +249,7 @@ public class DailyReportsController {
             tags = "DailyReports"
     )
     @PostMapping
-    public ResponseEntity<?> sendWarningPostToChat(@Parameter(description = "ИД чата Опекуна") @RequestParam Long inpChatID) {
+    public ResponseEntity<String> sendWarningPostToChat(@Parameter(description = "ИД чата Опекуна") @RequestParam Long inpChatID) {
         dailyReportService.makeWarningForDebtor(inpChatID);
         return ResponseEntity.ok().body("Warning Message was sent to chat " + inpChatID);
     }
