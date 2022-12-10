@@ -10,9 +10,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import ru.jd6team7.cooperatproject1.exceptions.PetNotFoundException;
+import ru.jd6team7.cooperatproject1.model.Cat;
 import ru.jd6team7.cooperatproject1.model.Dog;
 import ru.jd6team7.cooperatproject1.model.PetState;
-import ru.jd6team7.cooperatproject1.repository.DogRepository;
+import ru.jd6team7.cooperatproject1.repository.CatRepository;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,37 +24,37 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class DogServiceTest {
+class CatServiceTest {
 
     @Mock
-    private DogRepository testPetRepo;
+    private CatRepository testPetRepo;
 
     @InjectMocks
-    private DogService testService;
+    private CatService testService;
 
     private final String PHOTO_DIR = "src/main/resources/static/pets_photos";
 
-    private final Dog dummyTestDog = new Dog();
+    private final Cat dummyTestCat = new Cat();
 
     @BeforeEach
     void setUp() {
-        dummyTestDog.setId(10L);
-        dummyTestDog.setPetName("Бетти");
-        dummyTestDog.setAnimalGender("девочка");
-        dummyTestDog.setAge(7);
-        dummyTestDog.setCurrentState(PetState.AT_SHELTER.getCode());
+        dummyTestCat.setId(10L);
+        dummyTestCat.setPetName("Бетти");
+        dummyTestCat.setAnimalGender("девочка");
+        dummyTestCat.setAge(7);
+        dummyTestCat.setCurrentState(PetState.AT_SHELTER.getCode());
     }
 
     @Test
     void addPetTest() {
-        when(testPetRepo.save(any())).thenReturn(dummyTestDog);
-        Assertions.assertEquals(dummyTestDog, testService.addPet(dummyTestDog));
+        when(testPetRepo.save(any())).thenReturn(dummyTestCat);
+        Assertions.assertEquals(dummyTestCat, testService.addPet(dummyTestCat));
     }
 
     @Test
     void findPetTestSuccess() {
-        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.of(dummyTestDog));
-        Assertions.assertEquals(dummyTestDog, testService.findPet(10L));
+        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.of(dummyTestCat));
+        Assertions.assertEquals(dummyTestCat, testService.findPet(10L));
     }
 
     @Test
@@ -65,40 +66,40 @@ class DogServiceTest {
     @Test
     void deletePetTest() {
         when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.empty());
-        Assertions.assertEquals(true, testService.deletePet(dummyTestDog.getId()));
+        Assertions.assertEquals(true, testService.deletePet(dummyTestCat.getId()));
     }
 
     @Test
     void getKidsPetsForVisitorTest() {
-        List<Dog> expectedListDogs = List.of(dummyTestDog);
+        List<Cat> expectedListDogs = List.of(dummyTestCat);
         when(testPetRepo.getKidsPetsForVisitor()).thenReturn(expectedListDogs);
         Assertions.assertEquals(expectedListDogs, testService.getKidsPetsForVisitor());
     }
 
     @Test
     void getAdultPetsForVisitorTest() {
-        List<Dog> expectedListDogs = List.of(dummyTestDog);
+        List<Cat> expectedListDogs = List.of(dummyTestCat);
         when(testPetRepo.getAdultPetsForVisitor()).thenReturn(expectedListDogs);
         Assertions.assertEquals(expectedListDogs, testService.getAdultPetsForVisitor());
     }
 
     @Test
     void getAllKidsPetsTest() {
-        List<Dog> expectedListDogs = List.of(dummyTestDog);
+        List<Cat> expectedListDogs = List.of(dummyTestCat);
         when(testPetRepo.getAllByAgeBefore(any(Integer.class))).thenReturn(expectedListDogs);
         Assertions.assertEquals(expectedListDogs, testService.getAllKidsPets(2));
     }
 
     @Test
     void getAllAdultPetsTest() {
-        List<Dog> expectedListDogs = List.of(dummyTestDog);
+        List<Cat> expectedListDogs = List.of(dummyTestCat);
         when(testPetRepo.getAllByAgeAfter(any(Integer.class))).thenReturn(expectedListDogs);
         Assertions.assertEquals(expectedListDogs, testService.getAllAdultPets(2));
     }
 
     @Test
     void getAllPetsWithStateTest() {
-        List<Dog> expectedListDogs = List.of(dummyTestDog);
+        List<Cat> expectedListDogs = List.of(dummyTestCat);
         when(testPetRepo.getAllByCurrentStateLike(any(String.class))).thenReturn(expectedListDogs);
         Assertions.assertEquals(expectedListDogs, testService.getAllPetsWithState(PetState.AT_SHELTER.getCode()));
     }
@@ -107,10 +108,10 @@ class DogServiceTest {
     void addPetPhotoTestSuccess() throws IOException {
         FileInputStream dummyInpStream = new FileInputStream(PHOTO_DIR + "/test_photo.jpg");
         MultipartFile uploadFile = new MockMultipartFile("test_photo", dummyInpStream);
-        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.of(dummyTestDog));
-        when(testPetRepo.save(any(Dog.class))).thenReturn(dummyTestDog);
+        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.of(dummyTestCat));
+        when(testPetRepo.save(any(Cat.class))).thenReturn(dummyTestCat);
         testService.addPetPhoto(10L, uploadFile);
-        Assertions.assertNotNull(dummyTestDog.getPathFileToPhoto());
+        Assertions.assertNotNull(dummyTestCat.getPathFileToPhoto());
     }
 
     @Test
@@ -120,25 +121,7 @@ class DogServiceTest {
         when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.empty());
         Assertions.assertThrows(PetNotFoundException.class,
                 ()->{testService.addPetPhoto(100L, uploadFile);
-        }
-        );
-    }
-
-    @Test
-    void putPetStateTestSuccess() {
-        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.of(dummyTestDog));
-        when(testPetRepo.save(any(Dog.class))).thenReturn(dummyTestDog);
-        Assertions.assertEquals(dummyTestDog,
-                testService.putDogState(10L, PetState.STAY_OUT)
-                );
-    }
-
-    @Test
-    void putPetStateTestNotFound() {
-        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.empty());
-        Assertions.assertThrows(PetNotFoundException.class,
-                ()->{testService.putDogState(100L, PetState.AT_SHELTER);
-        }
+                }
         );
     }
 }

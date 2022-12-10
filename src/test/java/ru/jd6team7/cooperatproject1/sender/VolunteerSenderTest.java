@@ -58,7 +58,6 @@ class VolunteerSenderTest {
         vs.process(chatId, message);
         Assertions.assertTrue(visitor.isNeedCallback());
         Mockito.verify(vs).sendMessage(chatId, DONE);
-        /*Mockito.verify(sender).sendIntro(chatId);*/ //Как это протестить можно? Мок не видит связь на родителя. Отдельный мок сендера тоже не помогает.
     }
 
     @ParameterizedTest

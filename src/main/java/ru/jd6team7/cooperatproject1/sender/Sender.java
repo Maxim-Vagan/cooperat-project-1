@@ -32,7 +32,7 @@ public abstract class Sender {
     }
     public abstract void process(long chatId, String message);
     public void sendMessage(long chatId, String message) {
-        telegramBot.execute(new SendMessage(chatId, message).parseMode(ParseMode.Markdown));
+        telegramBot.execute(new SendMessage(chatId, message));
     }
     public void getIncorrectRequest(long chatId) {
         sendMessage(chatId, INCORRECT_REQUEST);

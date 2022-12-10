@@ -33,7 +33,6 @@ public class DailyReportSender extends Sender {
     private final TryPeriodRepository tpRepo;
     private final VolunteerSender volunteerSender;
     private final DailyReportService dailyReportService;
-    private final InfoDogShelterSender infoDogShelterSender;
     private final Visitor.MessageStatus status = Visitor.MessageStatus.SEND_DAILY_REPORT;
     private final String INTRO_INFO_DR = """
             Уважаемый Опекун! Для успешной сдачи отчёта
@@ -70,13 +69,11 @@ public class DailyReportSender extends Sender {
                              TelegramBot telegramBot,
                              TryPeriodRepository tpRepo,
                              VolunteerSender volunteerSender,
-                             DailyReportService dailyReportService,
-                             InfoDogShelterSender infoDogShelterSender) {
+                             DailyReportService dailyReportService) {
         super(visitorService, telegramBot);
         this.tpRepo = tpRepo;
         this.volunteerSender = volunteerSender;
         this.dailyReportService = dailyReportService;
-        this.infoDogShelterSender = infoDogShelterSender;
     }
 
     /** Интро для ознакомления Опекуна с форматом заполнения
@@ -92,7 +89,7 @@ public class DailyReportSender extends Sender {
      * @return Строка с именем и текстом */
     private String[] parsePetNameAndDailyText(String caption){
         String[] parseResult = {"", ""};
-        Matcher m1 = Pattern.compile("[Пп]итомец:\\s*([а-яА-ЯйЙ\\w]+?)\\s*$",
+        Matcher m1 = Pattern.compile("[Пп]итомец:\\s*([а-яА-ЯйЙ\\w]+?).*$",
                         Pattern.CASE_INSENSITIVE | Pattern.MULTILINE).matcher(caption);
         Matcher m2 = Pattern.compile("[Пп]итомец:.*\\n(.*)").matcher(caption);
         if (m1.find()) { parseResult[0] = m1.group(1); }
@@ -109,14 +106,9 @@ public class DailyReportSender extends Sender {
 
     public void processUpdate(long chatId, Update update) {
         Visitor visitor = visitorService.findVisitor(chatId);
-        ;
-        String incomeText = String.join(" ", update.message().caption(),  update.message().text()).replace("null", "").strip();
+        String incomeText = String.join(" ", update.message().caption(), update.message().text()).replace("null", "").strip();
         switch (incomeText) {
             case "/help" -> volunteerSender.sendIntro(chatId);
-            case "/back" -> {
-                if (visitor.getShelterStatus().equals(Visitor.ShelterStatus.DOG)) { super.sendIntro(chatId); }
-                else { super.sendIntro(chatId); }
-            }
             default -> {
                 String petDbInfo = "";
                 String[] petNameAndText = {"", ""};

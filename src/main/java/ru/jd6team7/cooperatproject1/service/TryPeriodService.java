@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.jd6team7.cooperatproject1.exceptions.TryPeriodNotFoundException;
 import ru.jd6team7.cooperatproject1.model.PetState;
 import ru.jd6team7.cooperatproject1.model.TryPeriod;
-import ru.jd6team7.cooperatproject1.model.visitor.DogVisitor;
-import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
 import ru.jd6team7.cooperatproject1.repository.NotificationTaskRepository;
 import ru.jd6team7.cooperatproject1.repository.TryPeriodRepository;
 
@@ -27,7 +25,7 @@ public class TryPeriodService {
     /** Объект репозитория для работы с данными, хранящимися в БД */
     private final TryPeriodRepository tryPeriodRepo;
     private final NotificationTaskRepository notifTaskRepo;
-    private final PetService petService;
+    private final DogService petService;
     /** Объект Логера для вывода лог-сообщений в файл лог-журнала */
     private final Logger logger = LoggerFactory.getLogger("ru.telbot.file");
     /** Константа Json формата */
@@ -47,7 +45,7 @@ public class TryPeriodService {
     /** Конструктор */
     public TryPeriodService(TryPeriodRepository tryPeriodRepo,
                             NotificationTaskRepository notifTaskRepo,
-                            PetService petService) {
+                            DogService petService) {
         this.tryPeriodRepo = tryPeriodRepo;
         this.notifTaskRepo = notifTaskRepo;
         this.petService = petService;
@@ -63,7 +61,7 @@ public class TryPeriodService {
         String petTableName = tryPeriodRepo.getTableName(inpTryP.getShelterID(), inpTryP.getPetID());
         switch (petTableName) {
             case "Dog" -> petService.putDogState(inpTryP.getPetID(), PetState.WITH_GUARDIAN);
-            case "Cat" -> petService.putCatState(inpTryP.getPetID(), PetState.WITH_GUARDIAN);
+/*            case "Cat" -> petService.putCatState(inpTryP.getPetID(), PetState.WITH_GUARDIAN);*/
             default -> logger.debug("WARN - Не удалось определить тип Питомца!");
         }
         return tryPeriodRepo.save(inpTryP);

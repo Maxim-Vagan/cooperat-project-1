@@ -21,12 +21,14 @@ public class Visitor {
     @Id
     @GeneratedValue
     private Long id;
+    private String name;
     @NonNull
     @Column(name = "chat_id")
     private Long chatId;
     @Column(name = "phone_number")
     private String phoneNumber;
     @Column(name = "need_callback")
+    private String email;
     private boolean needCallback;
     @Enumerated(EnumType.STRING)
     @Column(name = "message_status")

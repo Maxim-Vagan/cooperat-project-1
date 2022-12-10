@@ -1,11 +1,14 @@
 package ru.jd6team7.cooperatproject1.sender.dogSender;
 
 import com.pengrad.telegrambot.TelegramBot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.jd6team7.cooperatproject1.model.visitor.DogVisitor;
 import ru.jd6team7.cooperatproject1.model.visitor.Visitor;
 import ru.jd6team7.cooperatproject1.sender.Sender;
 import ru.jd6team7.cooperatproject1.service.VisitorService;
+
 
 /** Выводит команду особое приветствие на команду /start
  * Обрабатывает сообщений со статусом BASE, сейчас - все 3 возможных варианта обработаны в Дестрибьюторе

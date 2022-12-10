@@ -26,20 +26,17 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
  * вывод списков Питомцев по критериям запросов
  */
 @Service
-public class PetService {
+public class DogService {
     /** Поле хранит значение общей папке с файлами фото питомцев */
     @Value("${pets.photos.dir.path}")
     private String picturePath;
     /** Объект репозитория для работы с данными, хранящимися в БД */
     private final DogRepository petRepo;
-    /** Объект репозитория для работы с данными, хранящимися в БД */
-    private final CatRepository petRepo2;
     /** Объект Логера для вывода лог-сообщений в файл лог-журнала */
     private final Logger logger = LoggerFactory.getLogger("ru.telbot.file");
 
-    public PetService(DogRepository petRepo, CatRepository petRepo2) {
+    public DogService(DogRepository petRepo) {
         this.petRepo = petRepo;
-        this.petRepo2 = petRepo2;
     }
 
     /**
@@ -203,20 +200,6 @@ public class PetService {
         logger.debug("Вызван метод putDogState с inpPetState = " + inpPetState.name() + " для Питомца с petID = " + petID);
         curDog.setCurrentState(inpPetState.name());
         return petRepo.save(curDog);
-    }
-    /**
-     * Метод установки статуса Питомца путём выбора из перечисляемого типа
-     * @param inpPetState
-     * @return Возвращает изменённый экземпляр Питомца
-     */
-    public Cat putCatState(long petID, PetState inpPetState) {
-        Cat curCat = petRepo2.getPetByPetID(petID).orElse(null);
-        if (curCat == null) {
-            throw new PetNotFoundException("К сожалению Питомца с идентификатором (id = " + petID + ") Нет!");
-        }
-        logger.debug("Вызван метод putCatState с inpPetState = " + inpPetState.name() + " для Питомца с petID = " + petID);
-        curCat.setCurrentState(inpPetState.name());
-        return petRepo2.save(curCat);
     }
 
 }

@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.jd6team7.cooperatproject1.exceptions.PetNotFoundException;
 import ru.jd6team7.cooperatproject1.model.Dog;
 import ru.jd6team7.cooperatproject1.model.PetState;
-import ru.jd6team7.cooperatproject1.service.PetService;
+import ru.jd6team7.cooperatproject1.service.DogService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -24,11 +24,11 @@ import java.nio.file.Path;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/pet")
-public class PetController {
-    private final PetService petService;
+@RequestMapping(path = "/dog")
+public class DogController {
+    private final DogService petService;
 
-    public PetController(PetService petService) {
+    public DogController(DogService petService) {
         this.petService = petService;
     }
 
