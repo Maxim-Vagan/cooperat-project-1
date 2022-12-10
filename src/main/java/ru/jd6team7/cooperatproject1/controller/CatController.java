@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.jd6team7.cooperatproject1.exceptions.PetNotFoundException;
 import ru.jd6team7.cooperatproject1.model.Cat;
-import ru.jd6team7.cooperatproject1.model.Dog;
 import ru.jd6team7.cooperatproject1.model.PetState;
 import ru.jd6team7.cooperatproject1.service.CatService;
-import ru.jd6team7.cooperatproject1.service.DogService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -48,7 +46,7 @@ public class CatController {
                     @ApiResponse(
                             responseCode = "404",
                             description = "Питомца с ИД номером не найдено"
-                    )}, tags = "Dog"
+                    )}, tags = "Cat"
     )
     @GetMapping("{petID}")
     public ResponseEntity<Cat> getPet(@Parameter(description = "ИД номер Питомца") @PathVariable Long petID) {
@@ -85,7 +83,7 @@ public class CatController {
                                     mediaType = MediaType.TEXT_HTML_VALUE
                             )
                     )
-            }, tags = "Dog"
+            }, tags = "Cat"
     )
     @GetMapping("/{petID}/photoFromFileStore")
     public ResponseEntity<String> getPictureOfPetFromFileStore(@Parameter(description = "ИД номер Питомца") @PathVariable Long petID, HttpServletResponse response) throws IOException {
@@ -124,7 +122,7 @@ public class CatController {
                                     schema = @Schema(implementation = Cat.class)
                             )
                     )},
-            tags = "Dog"
+            tags = "Cat"
     )
     @PostMapping
     public ResponseEntity<Cat> createPet(@RequestBody Cat inpDog) {
@@ -160,7 +158,7 @@ public class CatController {
                             )
                     )
             },
-            tags = "Dog"
+            tags = "Cat"
     )
     @PostMapping(path = "{petID}/setPhoto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadPetPicture(@Parameter(description = "ИД номер Питомца") @PathVariable Long petID,
@@ -191,7 +189,7 @@ public class CatController {
                                     array = @ArraySchema(schema = @Schema(implementation = Cat.class))
                             )
                     )},
-            tags = "Dog"
+            tags = "Cat"
     )
     @PutMapping
     public ResponseEntity<Cat> updatePet(@RequestBody Cat inpDog) {
@@ -213,7 +211,7 @@ public class CatController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     array = @ArraySchema(schema = @Schema(implementation = Cat.class))
                             )
-                    )}, tags = "Dog"
+                    )}, tags = "Cat"
     )
     @DeleteMapping
     public ResponseEntity<Boolean> deletePet(@Parameter(description = "ИД номер Питомца") @RequestParam long petID) {
@@ -245,14 +243,14 @@ public class CatController {
                             responseCode = "404",
                             description = "Питомца с ИД номером не найдено"
                     )},
-            tags = "Dog"
+            tags = "Cat"
     )
     @PutMapping("/setPetState")
     public ResponseEntity<Cat> updatePetState(@Parameter(description = "ИД номер Питомца") @RequestParam Long petID,
                                               @Parameter(description = "статус Питомца") @RequestParam PetState inpState) {
         Cat resultEntity = petService.findPet(petID);
         if (resultEntity != null) {
-            petService.putDogState(petID, inpState);
+            petService.putPetState(petID, inpState);
             return ResponseEntity.ok(resultEntity);
         } else {
             return ResponseEntity.notFound().build();
@@ -276,7 +274,7 @@ public class CatController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = Cat.class)
                             )
-                    )}, tags = "Dog"
+                    )}, tags = "Cat"
     )
     @GetMapping("/showAllKidsPet")
     public ResponseEntity<List<Cat>> getAllKidsPet() {
@@ -306,7 +304,7 @@ public class CatController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = Cat.class)
                             )
-                    )}, tags = "Dog"
+                    )}, tags = "Cat"
     )
     @GetMapping("/showAllAdultPets")
     public ResponseEntity<List<Cat>> getAllAdultPets() {
@@ -336,7 +334,7 @@ public class CatController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = Cat.class)
                             )
-                    )}, tags = "Dog"
+                    )}, tags = "Cat"
     )
     @GetMapping("/showAdultPetsForVisitor")
     public ResponseEntity<List<Cat>> getAdultPetsForVisitor() {
@@ -366,7 +364,7 @@ public class CatController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = Cat.class)
                             )
-                    )}, tags = "Dog"
+                    )}, tags = "Cat"
     )
     @GetMapping("/showKidsPetsForVisitor")
     public ResponseEntity<List<Cat>> getKidsPetsForVisitor() {
@@ -396,7 +394,7 @@ public class CatController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = Cat.class)
                             )
-                    )}, tags = "Dog"
+                    )}, tags = "Cat"
     )
     @GetMapping("/showAllPetsWithState")
     public ResponseEntity<List<Cat>> showAllPetsWithState(@Parameter(description = "Статус Питомца") @RequestParam PetState inpState) {

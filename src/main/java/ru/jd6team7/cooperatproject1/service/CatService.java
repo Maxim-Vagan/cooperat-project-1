@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.jd6team7.cooperatproject1.exceptions.PetNotFoundException;
 import ru.jd6team7.cooperatproject1.model.Cat;
-import ru.jd6team7.cooperatproject1.model.Dog;
 import ru.jd6team7.cooperatproject1.model.PetState;
 import ru.jd6team7.cooperatproject1.repository.CatRepository;
 import ru.jd6team7.cooperatproject1.repository.DogRepository;
@@ -187,7 +186,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
             petRepo.save(curCat);
         }
 
-        public Cat putDogState(long petID, PetState inpPetState) {
+        public Cat putPetState(long petID, PetState inpPetState) {
             Cat curCat = petRepo.getPetByPetID(petID).orElse(null);
             if (curCat == null) {
                 throw new PetNotFoundException("К сожалению Питомца с идентификатором (id = " + petID + ") Нет!");

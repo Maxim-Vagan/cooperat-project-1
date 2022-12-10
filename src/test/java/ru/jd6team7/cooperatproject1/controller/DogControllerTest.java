@@ -21,7 +21,7 @@ import ru.jd6team7.cooperatproject1.exceptions.PetNotFoundException;
 import ru.jd6team7.cooperatproject1.model.Dog;
 import ru.jd6team7.cooperatproject1.model.PetState;
 import ru.jd6team7.cooperatproject1.repository.DogRepository;
-import ru.jd6team7.cooperatproject1.service.PetService;
+import ru.jd6team7.cooperatproject1.service.DogService;
 
 import java.io.FileInputStream;
 import java.util.List;
@@ -39,7 +39,7 @@ class DogControllerTest {
     private TestRestTemplate testRestTemp;
 
     @Autowired
-    private PetController petTestController;
+    private DogController petTestController;
 
     private final JSONObject dummyTestPostObj = new JSONObject();
 

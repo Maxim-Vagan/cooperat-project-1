@@ -89,7 +89,7 @@ public class DailyReportSender extends Sender {
      * @return Строка с именем и текстом */
     private String[] parsePetNameAndDailyText(String caption){
         String[] parseResult = {"", ""};
-        Matcher m1 = Pattern.compile("[Пп]итомец:\\s*([а-яА-ЯйЙ\\w]+?).*$",
+        Matcher m1 = Pattern.compile("[Пп]итомец:\\s*([а-яА-ЯйЙ\\w]+?)",
                         Pattern.CASE_INSENSITIVE | Pattern.MULTILINE).matcher(caption);
         Matcher m2 = Pattern.compile("[Пп]итомец:.*\\n(.*)").matcher(caption);
         if (m1.find()) { parseResult[0] = m1.group(1); }
@@ -109,6 +109,10 @@ public class DailyReportSender extends Sender {
         String incomeText = String.join(" ", update.message().caption(), update.message().text()).replace("null", "").strip();
         switch (incomeText) {
             case "/help" -> volunteerSender.sendIntro(chatId);
+            case "/back" -> {
+                if (visitor.getShelterStatus().equals(Visitor.ShelterStatus.DOG)) { super.sendIntro(chatId); }
+                else { super.sendIntro(chatId); }
+            }
             default -> {
                 String petDbInfo = "";
                 String[] petNameAndText = {"", ""};

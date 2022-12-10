@@ -27,8 +27,8 @@ public class Visitor {
     private Long chatId;
     @Column(name = "phone_number")
     private String phoneNumber;
-    @Column(name = "need_callback")
     private String email;
+    @Column(name = "need_callback")
     private boolean needCallback;
     @Enumerated(EnumType.STRING)
     @Column(name = "message_status")
@@ -50,11 +50,25 @@ public class Visitor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Visitor visitor = (Visitor) o;
-        return chatId == visitor.chatId;
+        return chatId.equals(visitor.chatId);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(chatId);
+    }
+
+    @Override
+    public String toString() {
+        return "Visitor{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", chatId=" + chatId +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", needCallback=" + needCallback +
+                ", messageStatus=" + messageStatus +
+                ", shelterStatus=" + shelterStatus +
+                '}';
     }
 }

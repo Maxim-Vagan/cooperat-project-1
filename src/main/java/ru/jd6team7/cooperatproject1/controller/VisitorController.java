@@ -22,7 +22,7 @@ public class VisitorController {
         return ResponseEntity.ok(addVisitor);
     }
 
-    @GetMapping("/find")
+    @GetMapping("/{id}/find")
     public ResponseEntity<Visitor> findVisitor(@PathVariable long id) {
         return ResponseEntity.ok(visitorService.findVisitor(id));
     }

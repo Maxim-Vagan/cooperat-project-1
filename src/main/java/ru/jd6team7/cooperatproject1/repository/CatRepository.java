@@ -23,5 +23,5 @@ public interface CatRepository extends JpaRepository<Cat, Long> {
     @Query(value = "SELECT * FROM cat WHERE current_state = 'AT_SHELTER' AND age >= 2", nativeQuery = true)
     List<Cat> getAdultPetsForVisitor();
     /** Найти питомца по его ИД номеру */
-    Optional<Cat> getCatByPetID(Long petID);
+    Optional<Cat> getPetByPetID(Long petID);
 }

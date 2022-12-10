@@ -59,29 +59,29 @@ class CatServiceTest {
 
     @Test
     void findPetTestNotFound() {
-        when(testPetRepo.getCatByPetID(any(Long.class))).thenReturn(Optional.empty());
-        Assertions.assertNull(testService.findCat(100L));
+        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.empty());
+        Assertions.assertNull(testService.findPet(100L));
     }
 
     @Test
     void updatePetTestSuccess() {
         dummyTestCat.setAge(3);
-        when(testPetRepo.getCatByPetID(any(Long.class))).thenReturn(Optional.of(dummyTestCat));
+        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.of(dummyTestCat));
         when(testPetRepo.save(any(Cat.class))).thenReturn(dummyTestCat);
-        Assertions.assertEquals(dummyTestCat, testService.updateCat(dummyTestCat));
+        Assertions.assertEquals(dummyTestCat, testService.updatePet(dummyTestCat));
     }
 
     @Test
     void updatePetTestFail() {
         dummyTestCat.setAge(3);
-        when(testPetRepo.getCatByPetID(any(Long.class))).thenReturn(Optional.empty());
-        Assertions.assertNull(testService.updateCat(dummyTestCat));
+        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.empty());
+        Assertions.assertNull(testService.updatePet(dummyTestCat));
     }
 
     @Test
     void deletePetTest() {
-        when(testPetRepo.getCatByPetID(any(Long.class))).thenReturn(Optional.empty());
-        Assertions.assertTrue(testService.deleteCat(dummyTestCat.getId()));
+        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.empty());
+        Assertions.assertTrue(testService.deletePet(dummyTestCat.getId()));
     }
 
     @Test
@@ -89,7 +89,7 @@ class CatServiceTest {
         List<Cat> expectedListCats = List.of(dummyTestCat);
         when(testPetRepo.getKidsPetsForVisitor()).thenReturn(expectedListCats);
         Assertions.assertArrayEquals(expectedListCats.toArray(),
-                testService.getKidsCatsForVisitor().toArray());
+                testService.getKidsPetsForVisitor().toArray());
     }
 
     @Test
@@ -97,7 +97,7 @@ class CatServiceTest {
         List<Cat> expectedListCats = List.of(dummyTestCat);
         when(testPetRepo.getAdultPetsForVisitor()).thenReturn(expectedListCats);
         Assertions.assertArrayEquals(expectedListCats.toArray(),
-                testService.getAdultCatsForVisitor().toArray());
+                testService.getAdultPetsForVisitor().toArray());
     }
 
     @Test
@@ -105,7 +105,7 @@ class CatServiceTest {
         List<Cat> expectedListCats = List.of(dummyTestCat);
         when(testPetRepo.getAllByAgeBefore(any(Integer.class))).thenReturn(expectedListCats);
         Assertions.assertArrayEquals(expectedListCats.toArray(),
-                testService.getAllKidsCats(2).toArray());
+                testService.getAllKidsPets(2).toArray());
     }
 
     @Test
@@ -113,7 +113,7 @@ class CatServiceTest {
         List<Cat> expectedListCats = List.of(dummyTestCat);
         when(testPetRepo.getAllByAgeAfter(any(Integer.class))).thenReturn(expectedListCats);
         Assertions.assertArrayEquals(expectedListCats.toArray(),
-                testService.getAllAdultCats(2).toArray());
+                testService.getAllAdultPets(2).toArray());
     }
 
     @Test
@@ -121,16 +121,16 @@ class CatServiceTest {
         List<Cat> expectedListCats = List.of(dummyTestCat);
         when(testPetRepo.getAllByCurrentStateLike(any(String.class))).thenReturn(expectedListCats);
         Assertions.assertArrayEquals(expectedListCats.toArray(),
-                testService.getAllCatsWithState(PetState.AT_SHELTER.getCode()).toArray());
+                testService.getAllPetsWithState(PetState.AT_SHELTER.getCode()).toArray());
     }
 
     @Test
     void addPetPhotoTestSuccess() throws IOException {
         FileInputStream dummyInpStream = new FileInputStream(PHOTO_DIR + "/test_photo.jpg");
         MultipartFile uploadFile = new MockMultipartFile("test_photo", dummyInpStream);
-        when(testPetRepo.getCatByPetID(any(Long.class))).thenReturn(Optional.of(dummyTestCat));
+        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.of(dummyTestCat));
         when(testPetRepo.save(any(Cat.class))).thenReturn(dummyTestCat);
-        testService.addCatPhoto(10L, uploadFile);
+        testService.addPetPhoto(10L, uploadFile);
         Assertions.assertNotNull(dummyTestCat.getPathFileToPhoto());
     }
 
@@ -138,27 +138,27 @@ class CatServiceTest {
     void addPetPhotoTestNotFound() throws IOException {
         FileInputStream dummyInpStream = new FileInputStream(PHOTO_DIR + "/test_photo.jpg");
         MultipartFile uploadFile = new MockMultipartFile("test_photo", dummyInpStream);
-        when(testPetRepo.getCatByPetID(any(Long.class))).thenReturn(Optional.empty());
+        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.empty());
         Assertions.assertThrows(PetNotFoundException.class,
-                ()->{testService.addCatPhoto(100L, uploadFile);
+                ()->{testService.addPetPhoto(100L, uploadFile);
         }
         );
     }
 
     @Test
     void putPetStateTestSuccess() {
-        when(testPetRepo.getCatByPetID(any(Long.class))).thenReturn(Optional.of(dummyTestCat));
+        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.of(dummyTestCat));
         when(testPetRepo.save(any(Cat.class))).thenReturn(dummyTestCat);
         Assertions.assertEquals(dummyTestCat,
-                testService.putCatState(10L, PetState.STAY_OUT)
+                testService.putPetState(10L, PetState.STAY_OUT)
                 );
     }
 
     @Test
     void putPetStateTestNotFound() {
-        when(testPetRepo.getCatByPetID(any(Long.class))).thenReturn(Optional.empty());
+        when(testPetRepo.getPetByPetID(any(Long.class))).thenReturn(Optional.empty());
         Assertions.assertThrows(PetNotFoundException.class,
-                ()->{testService.putCatState(100L, PetState.AT_SHELTER);
+                ()->{testService.putPetState(100L, PetState.AT_SHELTER);
         }
         );
     }

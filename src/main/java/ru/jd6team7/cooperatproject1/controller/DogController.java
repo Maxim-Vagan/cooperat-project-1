@@ -49,7 +49,7 @@ public class DogController {
                             description = "Питомца с ИД номером не найдено"
                     )}, tags = "Dog"
     )
-    @GetMapping("/dog/{petID}")
+    @GetMapping("/{petID}")
     public ResponseEntity<Dog> getPet(@Parameter(description = "ИД номер Питомца") @PathVariable Long petID) {
         Dog resultEntity = petService.findPet(petID);
         if (resultEntity != null) {
@@ -86,7 +86,7 @@ public class DogController {
                     )
             }, tags = "Dog"
     )
-    @GetMapping("/dog/{petID}/photoFromFileStore")
+    @GetMapping("/{petID}/photoFromFileStore")
     public ResponseEntity<String> getPictureOfPetFromFileStore(@Parameter(description = "ИД номер Питомца") @PathVariable Long petID, HttpServletResponse response) throws IOException {
         Dog resultEntity = petService.findPet(petID);
         if (resultEntity == null) {
@@ -125,7 +125,7 @@ public class DogController {
                     )},
             tags = "Dog"
     )
-    @PostMapping("/dog")
+    @PostMapping()
     public ResponseEntity<Dog> createPet(@RequestBody Dog inpDog) {
         Dog resultEntity = petService.addPet(inpDog);
         return ResponseEntity.ok(resultEntity);
@@ -161,7 +161,7 @@ public class DogController {
             },
             tags = "Dog"
     )
-    @PostMapping(path = "/dog/{petID}/setPhoto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "/{petID}/setPhoto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadPetPicture(@Parameter(description = "ИД номер Питомца") @PathVariable Long petID,
                                                    @Parameter(description = "Путь к файлу") @RequestBody MultipartFile inpPicture
     ) throws IOException {
@@ -192,7 +192,7 @@ public class DogController {
                     )},
             tags = "Dog"
     )
-    @PutMapping("/dog")
+    @PutMapping()
     public ResponseEntity<Dog> updatePet(@RequestBody Dog inpDog) {
         Dog resultEntity = petService.updatePet(inpDog);
         if (resultEntity != null) {
@@ -214,7 +214,7 @@ public class DogController {
                             )
                     )}, tags = "Dog"
     )
-    @DeleteMapping("/dog")
+    @DeleteMapping()
     public ResponseEntity<Boolean> deletePet(@Parameter(description = "ИД номер Питомца") @RequestParam long petID) {
         if (petService.deletePet(petID)) {
             return ResponseEntity.ok().build();
@@ -246,7 +246,7 @@ public class DogController {
                     )},
             tags = "Dog"
     )
-    @PutMapping("/dog/setPetState")
+    @PutMapping("/setPetState")
     public ResponseEntity<Dog> updatePetState(@Parameter(description = "ИД номер Питомца") @RequestParam Long petID,
                                               @Parameter(description = "статус Питомца") @RequestParam PetState inpState) {
         Dog resultEntity = petService.findPet(petID);
@@ -278,7 +278,7 @@ public class DogController {
                             )
                     )}, tags = "Dog"
     )
-    @GetMapping("/dog/showAllKidsPet")
+    @GetMapping("/showAllKidsPet")
     public ResponseEntity<List<Dog>> getAllKidsPet() {
         List<Dog> resultEntity = petService.getAllKidsPets(2);
         if (resultEntity.size() > 0) {
@@ -308,7 +308,7 @@ public class DogController {
                             )
                     )}, tags = "Dog"
     )
-    @GetMapping("/dog/showAllAdultPets")
+    @GetMapping("/showAllAdultPets")
     public ResponseEntity<List<Dog>> getAllAdultPets() {
         List<Dog> resultEntity = petService.getAllAdultPets(1);
         if (resultEntity.size() > 0) {
@@ -338,7 +338,7 @@ public class DogController {
                             )
                     )}, tags = "Dog"
     )
-    @GetMapping("/dog/showAdultPetsForVisitor")
+    @GetMapping("/showAdultPetsForVisitor")
     public ResponseEntity<List<Dog>> getAdultPetsForVisitor() {
         List<Dog> resultEntity = petService.getAdultPetsForVisitor();
         if (resultEntity.size() > 0) {
@@ -368,7 +368,7 @@ public class DogController {
                             )
                     )}, tags = "Dog"
     )
-    @GetMapping("/dog/showKidsPetsForVisitor")
+    @GetMapping("/showKidsPetsForVisitor")
     public ResponseEntity<List<Dog>> getKidsPetsForVisitor() {
         List<Dog> resultEntity = petService.getKidsPetsForVisitor();
         if (resultEntity.size() > 0) {
@@ -398,384 +398,9 @@ public class DogController {
                             )
                     )}, tags = "Dog"
     )
-    @GetMapping("/dog/showAllPetsWithState")
+    @GetMapping("/showAllPetsWithState")
     public ResponseEntity<List<Dog>> showAllPetsWithState(@Parameter(description = "Статус Питомца") @RequestParam PetState inpState) {
         List<Dog> resultEntity = petService.getAllPetsWithState(inpState.name());
-        if (resultEntity.size() > 0) {
-            return ResponseEntity.ok(resultEntity);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-//  *****************************************************************************************************************************************************************************    
-    @Operation(
-            summary = "Вывод данных о Питомце по его ИД номеру",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Данные получены!",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Cat.class))
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Питомца с ИД номером не найдено"
-                    )}, tags = "Cat"
-    )
-    @GetMapping("/cat/{petID}")
-    public ResponseEntity<Cat> getCat(@Parameter(description = "ИД номер Питомца") @PathVariable Long petID) {
-        Cat resultEntity = petService.findCat(petID);
-        if (resultEntity != null) {
-            return ResponseEntity.ok(resultEntity);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-	
-	@Operation(
-            summary = "Вывод фото Питомца по его ИД номеру из Файла на диске",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "фото выведено",
-                            content = @Content(
-                                    mediaType = MediaType.IMAGE_JPEG_VALUE,
-                                    schema = @Schema(implementation = Cat.class)
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Питомца с ИД номером не найдено, либо нет его Фото",
-                            content = @Content(
-                                    mediaType = MediaType.TEXT_HTML_VALUE
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "Внутренняя ошибка Веб приложения",
-                            content = @Content(
-                                    mediaType = MediaType.TEXT_HTML_VALUE
-                            )
-                    )
-            }, tags = "Cat"
-    )
-    @GetMapping("/cat/{petID}/photoFromFileStore")
-    public ResponseEntity<String> getPictureOfCatFromFileStore(@Parameter(description = "ИД номер Питомца") @PathVariable Long petID, HttpServletResponse response) throws IOException {
-        Cat resultEntity = petService.findCat(petID);
-        if (resultEntity == null) {
-            return ResponseEntity.notFound().build();
-        } else if (resultEntity.getPathFileToPhoto() == null){
-            return ResponseEntity.notFound().build();
-        } else {
-            Path imagePath = Path.of(resultEntity.getPathFileToPhoto());
-            try (InputStream inpStream = Files.newInputStream(imagePath);
-                 OutputStream outStream = response.getOutputStream();
-            ){
-                response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-//            response.setContentLength((int) resultEntity.getFileSize());
-                inpStream.transferTo(outStream);
-                return ResponseEntity.ok().body("фото выведено");
-            }
-        }
-    }
-	
-	@Operation(
-            summary = "Ввод данных о Питомце",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Cat.class)
-                    )
-            ),
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Данные записаны!",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Cat.class)
-                            )
-                    )},
-            tags = "Cat"
-    )
-    @PostMapping("/cat")
-    public ResponseEntity<Cat> createCat(@RequestBody Cat inpCat) {
-        Cat resultEntity = petService.addCat(inpCat);
-        return ResponseEntity.ok(resultEntity);
-    }
-	
-	@Operation(
-            summary = "Добавление Фото Питомца на диск + путь к данному файлу в БД в таблицу сущности Cat",
-            /*requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = @Content(
-                            mediaType = MediaType.IMAGE_JPEG_VALUE,
-                            schema = @Schema(implementation = Cat.class),
-                            extensions = {@Extension(name = "*.jpeg", properties = {}),
-                                    @Extension(name = "*.jpg", properties = {})
-                            }
-                    )
-            ),*/
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Фото сохранено!",
-                            content = @Content(
-                                    mediaType = MediaType.TEXT_HTML_VALUE,
-                                    schema = @Schema(implementation = Cat.class)
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "415",
-                            description = "Неподдерживаемый формат данных!",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE
-                            )
-                    )
-            },
-            tags = "Cat"
-    )
-    @PostMapping(path = "/cat/{petID}/setPhoto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadCatPicture(@Parameter(description = "ИД номер Питомца") @PathVariable Long petID,
-                                                   @Parameter(description = "Путь к файлу") @RequestBody MultipartFile inpPicture
-    ) throws IOException {
-        //FileTreatmentException("Something bad has happend via treatment of uploading file")
-        if (inpPicture.getSize() > 1024 * 1024 * 10) {
-            return ResponseEntity.badRequest().body("File great than 10 Mb!");
-        }
-        petService.addPetPhoto(petID, inpPicture);
-        return ResponseEntity.ok().body("File Photo was uploaded successfully");
-    }
-	
-	@Operation(
-            summary = "Обновление данных о Питомце",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Cat.class)
-                    )
-            ),
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Данные записаны!",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Cat.class))
-                            )
-                    )},
-            tags = "Cat"
-    )
-    @PutMapping("/cat")
-    public ResponseEntity<Cat> updatePet(@RequestBody Cat inpCat) {
-        Cat resultEntity = petService.updateCat(inpCat);
-        if (resultEntity != null) {
-            return ResponseEntity.ok(resultEntity);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-	
-	@Operation(
-            summary = "Удаление данных о Питомце по его ИД номеру",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Данные удалены!",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Cat.class))
-                            )
-                    )}, tags = "Cat"
-    )
-    @DeleteMapping("/cat")
-    public ResponseEntity<Boolean> deleteCat(@Parameter(description = "ИД номер Питомца") @RequestParam long petID) {
-        if (petService.deleteCat(petID)) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-	
-	@Operation(
-            summary = "Обновление статуса Питомца",
-            /*requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Cat.class)
-                    )
-            ),*/
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Данные записаны!",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Cat.class))
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Питомца с ИД номером не найдено"
-                    )},
-            tags = "Cat"
-    )
-    @PutMapping("/cat/setPetState")
-    public ResponseEntity<Cat> updateCatState(@Parameter(description = "ИД номер Питомца") @RequestParam Long petID,
-                                              @Parameter(description = "статус Питомца") @RequestParam PetState inpState) {
-        Cat resultEntity = petService.findCat(petID);
-        if (resultEntity != null) {
-            petService.putCatState(petID, inpState);
-            return ResponseEntity.ok(resultEntity);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-	
-	@Operation(
-            summary = "Вывод списка маленьких Питомцев (малыши)",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Данные получены!",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Cat.class))
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Список пуст",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Cat.class)
-                            )
-                    )}, tags = "Cat"
-    )
-    @GetMapping("/cat/showAllKidsPet")
-    public ResponseEntity<List<Cat>> getAllKidsCat() {
-        List<Cat> resultEntity = petService.getAllKidsCats(2);
-        if (resultEntity.size() > 0) {
-            return ResponseEntity.ok(resultEntity);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-	
-	@Operation(
-            summary = "Вывод списка взрослых Питомцев",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Данные получены!",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Cat.class))
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Список пуст",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Cat.class)
-                            )
-                    )}, tags = "Cat"
-    )
-    @GetMapping("/cat/showAllAdultPets")
-    public ResponseEntity<List<Cat>> getAllAdultCats() {
-        List<Cat> resultEntity = petService.getAllAdultCats(1);
-        if (resultEntity.size() > 0) {
-            return ResponseEntity.ok(resultEntity);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-	
-	@Operation(
-            summary = "Вывод списка взрослых Питомцев для общения с Посетителем",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Данные получены!",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Cat.class))
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Список пуст",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Cat.class)
-                            )
-                    )}, tags = "Cat"
-    )
-    @GetMapping("/cat/showAdultPetsForVisitor")
-    public ResponseEntity<List<Cat>> getAdultCatsForVisitor() {
-        List<Cat> resultEntity = petService.getAdultCatsForVisitor();
-        if (resultEntity.size() > 0) {
-            return ResponseEntity.ok(resultEntity);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-	
-	@Operation(
-            summary = "Вывод списка маленьких Питомцев для общения с Посетителем",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Данные получены!",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Cat.class))
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Список пуст",
-                            content = @Content(
-                                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                schema = @Schema(implementation = Cat.class)
-                            )
-                    )}, tags = "Cat"
-    )
-    @GetMapping("/cat/showKidsPetsForVisitor")
-    public ResponseEntity<List<Cat>> getKidsCatsForVisitor() {
-        List<Cat> resultEntity = petService.getKidsCatsForVisitor();
-        if (resultEntity.size() > 0) {
-            return ResponseEntity.ok(resultEntity);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-	
-	@Operation(
-            summary = "Вывод всех Питомцев с определённым статусом",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Данные получены!",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = Cat.class))
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Список пуст",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Cat.class)
-                            )
-                    )}, tags = "Cat"
-    )
-    @GetMapping("/cat/showAllPetsWithState")
-    public ResponseEntity<List<Cat>> showAllCatsWithState(@Parameter(description = "Статус Питомца") @RequestParam PetState inpState) {
-        List<Cat> resultEntity = petService.getAllCatsWithState(inpState.name());
         if (resultEntity.size() > 0) {
             return ResponseEntity.ok(resultEntity);
         } else {
