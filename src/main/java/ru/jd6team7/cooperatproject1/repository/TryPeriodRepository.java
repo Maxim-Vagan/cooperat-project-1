@@ -117,12 +117,13 @@ public interface TryPeriodRepository extends JpaRepository<TryPeriod, Long> {
     List<DogVisitor> getAllVisitorsOfShelter(@Param("shelter_id") Integer shelterID);
 
     /** Показать все действующие Испытательные периоды указанного Посетителя данного Приюта */
-    @Query(value = "select * from try_period_registry tpr " +
-            "inner join visitors_and_shelters vas on tpr.visitor_id = vas.visitor_id " +
-            "where vas.visitor_id = :visitor_id " +
-            "and vas.shelter_id = :shelter_id " +
-            "and tpr.end_date is not null " +
-            "and coalesce(tpr.additional_period_end_date, tpr.end_date) > now()", nativeQuery = true)
+    @Query(value = """
+            select distinct tpr.* from try_period_registry tpr
+            where tpr.visitor_id = :visitor_id
+                and tpr.shelter_id = :shelter_id
+                and tpr.end_date is not null
+                and coalesce(tpr.additional_period_end_date, tpr.end_date) > now()
+            """, nativeQuery = true)
     List<TryPeriod> getTryPeriodsOfVisitor(@Param("shelter_id") Integer shelterID,
                                            @Param("visitor_id") Integer visitorID);
 

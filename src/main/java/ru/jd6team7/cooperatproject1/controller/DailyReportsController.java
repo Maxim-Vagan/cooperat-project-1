@@ -164,7 +164,7 @@ public class DailyReportsController {
                     )}, tags = "DailyReports"
     )
     @DeleteMapping("/report")
-    public ResponseEntity<Boolean> deleteDailyReport(@Parameter(description = "ИД номер Питомца") @RequestParam long ID) {
+    public ResponseEntity<Boolean> deleteDailyReport(@Parameter(description = "ИД номер Отчёта") @RequestParam long ID) {
         if (dailyReportService.deleteDailyReport(ID)) {
             return ResponseEntity.ok().build();
         } else {

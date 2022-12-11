@@ -74,21 +74,23 @@ public class CheckAndNotify {
             notifTaskRepo.addNotifOnDate(
                     LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
                     NOTIFY_MSG,
-                    LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(3L),
+                    LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(1L),
                     Long.decode(notifChartID)
             );
         }
         List<String> notifVisitors = tryPeriodRepo.getListDebtorsNotification();
-        StringBuilder sb = new StringBuilder();
-        sb.append("*Список опекунов-должников*").append("\r\n");
-        for (String notifVisitor : notifVisitors) {
-            sb.append(notifVisitor).append("\r\n");
+        if (notifVisitors.size()>0) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("*Список опекунов-должников*").append("\r\n");
+            for (String notifVisitor : notifVisitors) {
+                sb.append(notifVisitor).append("\r\n");
+            }
+            notifTaskRepo.addNotifOnDate(
+                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+                    sb.toString(),
+                    LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(2L),
+                    dutyVolunteer
+            );
         }
-        notifTaskRepo.addNotifOnDate(
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
-                sb.toString(),
-                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(5L),
-                dutyVolunteer
-        );
     }
 }

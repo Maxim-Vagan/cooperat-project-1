@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.File;
 import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.GetFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -89,7 +90,7 @@ public class DailyReportSender extends Sender {
      * @return Строка с именем и текстом */
     private String[] parsePetNameAndDailyText(String caption){
         String[] parseResult = {"", ""};
-        Matcher m1 = Pattern.compile("[Пп]итомец:\\s*([а-яА-ЯйЙ\\w]+?)",
+        Matcher m1 = Pattern.compile("[Пп]итомец:\\s*([а-яА-ЯйЙ\\w]+)",
                         Pattern.CASE_INSENSITIVE | Pattern.MULTILINE).matcher(caption);
         Matcher m2 = Pattern.compile("[Пп]итомец:.*\\n(.*)").matcher(caption);
         if (m1.find()) { parseResult[0] = m1.group(1); }
@@ -137,7 +138,7 @@ public class DailyReportSender extends Sender {
                     MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
                     String fileExtension = mimeTypesMap.getContentType(filePhoto.filePath());
                     String dailyPhotoFileName = "";
-                    if (!petDbInfo.isEmpty()) {
+                    if (petDbInfo != null && !petDbInfo.isEmpty() ) {
                         dailyPhotoFileName = petDbInfo.split(";")[2].replace("$", fileExtension.split("/")[1]);
                     }
                     try (InputStream bis = new ByteArrayInputStream(telegramBot.getFileContent(filePhoto));

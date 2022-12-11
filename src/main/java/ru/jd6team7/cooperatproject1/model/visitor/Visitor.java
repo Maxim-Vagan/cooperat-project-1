@@ -19,7 +19,7 @@ public class Visitor {
 
     public enum ShelterStatus {DOG, CAT;}
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String name;
     @NonNull

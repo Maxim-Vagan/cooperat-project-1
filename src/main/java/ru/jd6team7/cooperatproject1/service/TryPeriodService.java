@@ -111,7 +111,9 @@ public class TryPeriodService {
         String[] infoParts = tryPeriodRepo.getGuardianInfoForNotify(inpTryP.getId()).split(";");
         int extendedDays = 0;
         if (inpTryP.getAdditionalEndDate() != null) {
-            extendedDays = inpTryP.getAdditionalEndDate().compareTo(inpTryP.getEndDate())/(1000*3600*24);
+            LocalDateTime endDate = inpTryP.getEndDate();
+            LocalDateTime AdditionalDate = inpTryP.getAdditionalEndDate();
+            extendedDays = AdditionalDate.compareTo(endDate);
         }
         switch (newStatus) {
             case PASSED -> notifTaskRepo.addNotifOnDate(
@@ -133,8 +135,8 @@ public class TryPeriodService {
                     String.format("""
                             Уважаемый(ая) %s вынуждены сообщить
                             что Ваш Испытательный срок Не пройден!
-                            Для разъяснения причин Вы можете связаться с волонтёром
-                            %s %s по номеру %s""", infoParts[1], infoParts[2], infoParts[3], infoParts[4]),
+                            Для разъяснения причин рекомендуем связаться с волонтёром!
+                            """, infoParts[1]),//, infoParts[2], infoParts[3], infoParts[4]),
                     LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(1L),
                     Long.decode(infoParts[0])
             );
