@@ -1,6 +1,4 @@
 -- liquibase formatted sql
--- changeset maxvagan:0
-create sequence hibernate_sequence START 1;
 
 -- changeset maxvagan:1
 create table if not exists notification_task
@@ -156,4 +154,6 @@ alter table cat add column shelter_id integer REFERENCES shelter(id);
 
 -- changeset mkachalov:6
 alter table visitor add email text;
-alter table visitor add phone_number text;
+
+-- changeset mkachalov:7
+alter table visitor add name text;
